@@ -1,14 +1,20 @@
 <template>
   <div class="tabs">
-    <span
-      :class="{ tab_item: true, active: route.name === item.name }"
-      @click="clickItem(item)"
-      @click.middle="closeItem(item)"
-      v-for="item in tabList"
-      :key="item.name"
-      >{{ item.title
-      }}<icon-close @click.stop="closeItem(item)" v-if="item.name !== 'home'"
-    /></span>
+    <swiper :slides-per-view="slidesPerView" class="mySwiper">
+      <swiper-slide v-for="(item, index) in tabList" :key="item.name">
+        <span
+          :class="{ tab_item: true, active: route.name === item.name }"
+          @click="clickItem(item)"
+          @click.middle="closeItem(item)"
+        >
+          {{ item.title }}
+          <IconClose
+            @click.stop="closeItem(item)"
+            v-if="item.name !== 'home'"
+          ></IconClose>
+        </span>
+      </swiper-slide>
+    </swiper>
 
     <span class="tab_item close_tab_item" @click="closeAllTab">全部关闭</span>
   </div>
@@ -21,8 +27,46 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import { watch } from "vue";
 import { IconClose } from "@arco-design/web-vue/es/icon";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { onMounted } from "vue";
 
 const route = useRoute();
+
+const slidesPerView = ref(12);
+
+onMounted(() => {
+  // 总宽度
+  let mySwiper = document.querySelector(".mySwiper") as Element;
+  let mySwiperWith = 1200;
+  if (mySwiper != null) {
+    mySwiperWith = mySwiper.clientWidth;
+  }
+  // 实际宽度
+  let actual = document.querySelector(".swiper-wrapper") as Element;
+  let actualWidth = 1200;
+  if (mySwiper != null) {
+    actualWidth = actual.scrollWidth;
+  }
+
+  if (actualWidth <= mySwiperWith) {
+    return;
+  }
+  let swiperSlideList = document.querySelectorAll(
+    ".swiper-wrapper .swiper-slide"
+  );
+
+  let sum = 0;
+  let count = 0;
+
+  for (const slide of swiperSlideList) {
+    sum += slide.clientWidth;
+    if (sum > mySwiperWith) {
+      break;
+    }
+    count++;
+  }
+  slidesPerView.value = count;
+});
 
 interface tabItem {
   name: string;
@@ -54,10 +98,13 @@ watch(
         name: route.name as string,
         title: route.meta.title as string,
       });
-      // 更新到store里面去
-      setStoreByTabList();
     }
   }
+);
+
+watch(
+  () => tabList.value.length,
+  () => setStoreByTabList()
 );
 
 // closeItem 点击关闭 tab
@@ -71,7 +118,6 @@ function closeItem(item: tabItem) {
   // 先删除点击的这个tab
   let index = tabList.value.findIndex((tab) => item.name === tab.name);
   tabList.value.splice(index, 1);
-  setStoreByTabList();
 
   // 如果是点击当前所在页面
   if (item.name === (route.name as string)) {
@@ -89,7 +135,6 @@ function closeAllTab() {
   if (route.name !== "home") {
     router.push({ name: "home" });
   }
-  setStoreByTabList();
 }
 
 // setStoreByTabList 更新 tabs 到 store
@@ -115,57 +160,67 @@ function loadStoreByTabList() {
 loadStoreByTabList();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .tabs {
   height: 30px;
-  background-color: var(--color-bg-1);
-  padding: 0 20px;
+  width: 100%;
   border-bottom: 1px solid var(--bg);
+  padding: 0 20px;
   display: flex;
   align-items: center;
   position: relative;
+  background-color: var(--color-bg-1);
+
+  .mySwiper {
+    width: calc(100% - 94px);
+    overflow: hidden;
+    white-space: nowrap;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    .swiper-wrapper {
+      display: flex;
+      justify-content: start;
+      width: 100%;
+
+      .swiper-slide {
+        width: auto !important;
+      }
+    }
+  }
 
   .tab_item {
-    color: var(--color-text-1);
-    background-color: var(--color-bg-1);
-    border: 1px solid var(--bg);
     border-radius: 5px;
-    height: 24px;
-    display: flex;
-    padding: 0 10px;
-    align-items: center;
-    justify-content: center;
+    border: 1px solid var(--bg);
+    padding: 2px 8px;
     margin-right: 10px;
     cursor: pointer;
 
     &.active {
+      background-color: var(--active);
       color: white;
-      background-color: rgb(var(--arcoblue-6));
+      border: none;
 
-      &:hover {
-        svg {
-          background-color: rgb(var(--arcoblue-5));
-        }
+      svg:hover {
+        background-color: rgb(var(--arcoblue-4));
       }
-    }
-
-    &.close_tab_item {
-      position: absolute;
-      right: 20px;
-      top: 3px;
     }
 
     svg {
-      margin-left: 5px;
       font-size: 12px;
       border-radius: 50%;
-    }
 
-    &:hover {
-      svg {
+      &:hover {
         background-color: var(--bg);
       }
     }
+  }
+
+  .close_tab_item {
+    position: absolute;
+    right: 20px;
+    margin-right: 0;
   }
 }
 </style>

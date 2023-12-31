@@ -37,9 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="tabs">
-        <gvb-tabs />
-      </div>
+      <gvb-tabs />
       <div class="container">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
