@@ -10,10 +10,11 @@
           <gvb-breadcrumb />
         </div>
         <div class="actions">
-          <div class="action_home"><icon-home class="action_icon" /></div>
+          <div class="action_home">
+            <icon-home class="action_icon" @click="goHome" />
+          </div>
           <div class="action_theme">
-            <icon-sun-fill class="action_icon" />
-            <icon-moon-fill class="action_icon" />
+            <gvb-theme />
           </div>
           <div class="action_user_info_menu">
             <a-dropdown>
@@ -50,16 +51,18 @@
 </template>
 
 <script setup lang="ts">
-import {
-  IconHome,
-  IconSunFill,
-  IconMoonFill,
-  IconDown,
-} from "@arco-design/web-vue/es/icon";
+import { IconHome, IconDown } from "@arco-design/web-vue/es/icon";
 import GvbTabs from "@/components/admin/tabs.vue";
 import GvbBreadcrumb from "@/components/admin/breadcrumb.vue";
 import GvbMenu from "@/components/admin/menu.vue";
 import GvbLogo from "@/components/admin/logo.vue";
+import GvbTheme from "@/components/common/theme.vue";
+import router from "@/router";
+
+// goHome 去首页
+function goHome() {
+  router.push({ name: "index" });
+}
 </script>
 
 <style lang="scss">
@@ -73,6 +76,7 @@ import GvbLogo from "@/components/admin/logo.vue";
     height: 100vh;
     border-right: 1px solid var(--bg);
     height: 100vh;
+    background-color: var(--color-bg-1);
   }
 
   main {
@@ -87,6 +91,7 @@ import GvbLogo from "@/components/admin/logo.vue";
       justify-content: space-between;
       padding: 0 20px;
       align-items: center;
+      background-color: var(--color-bg-1);
 
       .actions {
         display: flex;
