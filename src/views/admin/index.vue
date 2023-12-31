@@ -71,7 +71,11 @@
         <gvb-tabs />
       </div>
       <div class="container">
-        <router-view></router-view>
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component"></component>
+          </transition>
+        </router-view>
       </div>
     </main>
   </div>
@@ -186,11 +190,13 @@ function clickMenuItem(name: string) {
 .admin {
   display: flex;
   color: var(--color-text-1);
+  height: 100vh;
 
   aside {
     width: 240px;
     height: 100vh;
     border-right: 1px solid var(--bg);
+    height: 100vh;
 
     .logo {
       height: 90px;
@@ -221,6 +227,7 @@ function clickMenuItem(name: string) {
 
   main {
     width: calc(100% - 240px);
+    overflow-x: hidden;
 
     .head {
       width: 100%;
@@ -272,5 +279,25 @@ function clickMenuItem(name: string) {
       padding: 20px;
     }
   }
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.fade-enter-active {
+  transform: translateX(-30px);
+  opacity: 0;
+}
+
+.fade-enter-to {
+  transform: translateX(0px);
+  opacity: 1;
+}
+
+.fade-leave-active,
+.fade-enter-active {
+  transition: all 0.3s ease-out;
 }
 </style>
