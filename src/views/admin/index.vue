@@ -1,34 +1,8 @@
 <template>
   <div class="admin">
     <aside>
-      <div class="logo">
-        <img src="https://skyao.io/learning-go/images/logo.png" alt="" />
-        <div class="logo_title">
-          <div>个人博客</div>
-          <div>GopherBlog</div>
-        </div>
-      </div>
-      <div class="menu">
-        <a-menu
-          @menu-item-click="clickMenuItem"
-          v-model:selected-keys="selectedKeys"
-          v-model:open-keys="openKeys"
-        >
-          <template v-for="item in menuList" :key="item.name">
-            <a-menu-item :key="item.name" v-if="item.children?.length === 0">
-              <template #icon><component :is="item.icon"></component></template>
-              {{ item.title }}
-            </a-menu-item>
-            <a-sub-menu :key="item.name" v-if="item.children?.length !== 0">
-              <template #icon><component :is="item.icon"></component></template>
-              <template #title>{{ item.title }}</template>
-              <a-menu-item :key="child.name" v-for="child in item.children">{{
-                child.title
-              }}</a-menu-item>
-            </a-sub-menu>
-          </template>
-        </a-menu>
-      </div>
+      <gvb-logo />
+      <gvb-menu />
     </aside>
     <main>
       <div class="head">
@@ -82,105 +56,12 @@ import {
   IconHome,
   IconSunFill,
   IconMoonFill,
-  IconApps,
-  IconUser,
-  IconBook,
-  IconUserGroup,
-  IconMessage,
-  IconSettings,
   IconDown,
 } from "@arco-design/web-vue/es/icon";
 import GvbTabs from "@/components/admin/tabs.vue";
 import GvbBreadcrumb from "@/components/admin/breadcrumb.vue";
-import { type Component } from "vue";
-import router from "@/router";
-import { useRoute } from "vue-router";
-import { ref } from "vue";
-
-const route = useRoute();
-
-interface MenuType {
-  title: string;
-  icon?: Component;
-  name?: string; // 路由名字
-  children: MenuType[];
-}
-
-const menuList: MenuType[] = [
-  {
-    title: "首页",
-    icon: IconApps,
-    name: "home",
-    children: [],
-  },
-  {
-    title: "个人中心",
-    icon: IconUser,
-    name: "center",
-    children: [
-      {
-        title: "个人信息",
-        name: "mineInfo",
-        children: [],
-      },
-    ],
-  },
-  {
-    title: "文章管理",
-    icon: IconBook,
-    name: "article",
-    children: [
-      {
-        title: "文章列表",
-        name: "articleList",
-        children: [],
-      },
-    ],
-  },
-  {
-    title: "用户管理",
-    icon: IconUserGroup,
-    name: "user",
-    children: [
-      {
-        title: "用户列表",
-        name: "userList",
-        children: [],
-      },
-    ],
-  },
-  {
-    title: "群聊管理",
-    icon: IconMessage,
-    name: "chat",
-    children: [
-      {
-        title: "群聊记录",
-        name: "chatList",
-        children: [],
-      },
-    ],
-  },
-  {
-    title: "系统管理",
-    icon: IconSettings,
-    name: "system",
-    children: [
-      {
-        title: "菜单列表",
-        name: "menuList",
-        children: [],
-      },
-    ],
-  },
-];
-
-const selectedKeys = ref([route.name]);
-const openKeys = ref([route.matched[1].name]);
-
-function clickMenuItem(name: string) {
-  router.push({ name });
-}
+import GvbMenu from "@/components/admin/menu.vue";
+import GvbLogo from "@/components/admin/logo.vue";
 </script>
 
 <style lang="scss">
@@ -194,32 +75,6 @@ function clickMenuItem(name: string) {
     height: 100vh;
     border-right: 1px solid var(--bg);
     height: 100vh;
-
-    .logo {
-      height: 90px;
-      display: flex;
-      padding: 20px 0 20px 20px;
-      align-items: center;
-      border-bottom: 1px solid var(--bg);
-
-      img {
-        width: 60px;
-        height: 60px;
-      }
-
-      .logo_title {
-        margin-left: 20px;
-        > div:nth-child(1) {
-          font-size: 20px;
-          font-weight: 600;
-          margin-bottom: 2px;
-        }
-
-        > div:nth-child(2) {
-          font-size: 14px;
-        }
-      }
-    }
   }
 
   main {
