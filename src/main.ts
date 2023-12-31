@@ -1,3 +1,6 @@
+import "@/assets/base.css";
+import "@/assets/theme.css";
+
 import { createApp } from "vue";
 import ArcoVue from "@arco-design/web-vue";
 import { createPinia } from "pinia";

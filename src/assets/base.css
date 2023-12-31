@@ -1,0 +1,23 @@
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: var(--active);
+  text-decoration: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px; /* 滚动条宽度 */
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbarBg); /* 滚动条颜色 */
+  border-radius: 5px; /* 滚动条圆角 */
+  position: fixed;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* 滚动条背景色 */
+}

@@ -1,0 +1,28 @@
+body {
+  --bg: #f0eeee;
+  --active: rgb(var(--arcoblue-6));
+  --login_bg: rgba(255, 255, 255, 0.8);
+  --charts_color1: #53b8ec;
+  --charts_color2: #f15427;
+
+  --nav_text_color: white;
+
+  --container_width: 1200px;
+
+  --md-bk-color: white;
+
+  --hightColor: #d71345;
+
+  --scrollbarBg: rgba(0, 0, 0, 0.1);
+}
+
+body[arco-theme="dark"] {
+  --bg: #282828;
+  --login_bg: rgba(0, 0, 0, 0.9);
+  --charts_color1: #d97559;
+  --charts_color2: #e4c477;
+
+  --md-bk-color: black;
+
+  --scrollbarBg: rgba(255, 255, 255, 0.1);
+}
