@@ -33,11 +33,7 @@
     <main>
       <div class="head">
         <div class="breadcrumbs">
-          <a-breadcrumb>
-            <a-breadcrumb-item>Home</a-breadcrumb-item>
-            <a-breadcrumb-item>Channel</a-breadcrumb-item>
-            <a-breadcrumb-item>News</a-breadcrumb-item>
-          </a-breadcrumb>
+          <gvb-breadcrumb />
         </div>
         <div class="actions">
           <div class="action_home"><icon-home class="action_icon" /></div>
@@ -95,6 +91,7 @@ import {
   IconDown,
 } from "@arco-design/web-vue/es/icon";
 import GvbTabs from "@/components/admin/tabs.vue";
+import GvbBreadcrumb from "@/components/admin/breadcrumb.vue";
 import { type Component } from "vue";
 import router from "@/router";
 import { useRoute } from "vue-router";
