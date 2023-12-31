@@ -9,32 +9,24 @@
         </div>
       </div>
       <div class="menu">
-        <a-menu :default-open-keys="['0']" :default-selected-keys="['0_2']">
-          <a-sub-menu key="0">
-            <template #icon><icon-apps></icon-apps></template>
-            <template #title>Navigation 1</template>
-            <a-menu-item key="0_0">Menu 1</a-menu-item>
-            <a-menu-item key="0_1">Menu 2</a-menu-item>
-            <a-menu-item key="0_2">Menu 3</a-menu-item>
-            <a-menu-item key="0_3">Menu 4</a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="1">
-            <template #icon><icon-bug></icon-bug></template>
-            <template #title>Navigation 2</template>
-            <a-menu-item key="1_0">Menu 1</a-menu-item>
-            <a-menu-item key="1_1">Menu 2</a-menu-item>
-            <a-menu-item key="1_2">Menu 3</a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="2">
-            <template #icon><icon-bulb></icon-bulb></template>
-            <template #title>Navigation 3</template>
-            <a-menu-item key="2_0">Menu 1</a-menu-item>
-            <a-menu-item key="2_1">Menu 2</a-menu-item>
-            <a-sub-menu key="2_2" title="Navigation 4">
-              <a-menu-item key="2_2_0">Menu 1</a-menu-item>
-              <a-menu-item key="2_2_1">Menu 2</a-menu-item>
+        <a-menu
+          @menu-item-click="clickMenuItem"
+          v-model:selected-keys="selectedKeys"
+          v-model:open-keys="openKeys"
+        >
+          <template v-for="item in menuList" :key="item.name">
+            <a-menu-item :key="item.name" v-if="item.children?.length === 0">
+              <template #icon><component :is="item.icon"></component></template>
+              {{ item.title }}
+            </a-menu-item>
+            <a-sub-menu :key="item.name" v-if="item.children?.length !== 0">
+              <template #icon><component :is="item.icon"></component></template>
+              <template #title>{{ item.title }}</template>
+              <a-menu-item :key="child.name" v-for="child in item.children">{{
+                child.title
+              }}</a-menu-item>
             </a-sub-menu>
-          </a-sub-menu>
+          </template>
         </a-menu>
       </div>
     </aside>
@@ -91,11 +83,103 @@ import {
   IconSunFill,
   IconMoonFill,
   IconApps,
-  IconBug,
-  IconBulb,
+  IconUser,
+  IconBook,
+  IconUserGroup,
+  IconMessage,
+  IconSettings,
   IconDown,
 } from "@arco-design/web-vue/es/icon";
 import GvbTabs from "@/components/admin/tabs.vue";
+import { type Component } from "vue";
+import router from "@/router";
+import { useRoute } from "vue-router";
+import { ref } from "vue";
+
+const route = useRoute();
+
+interface MenuType {
+  title: string;
+  icon?: Component;
+  name?: string; // 路由名字
+  children: MenuType[];
+}
+
+const menuList: MenuType[] = [
+  {
+    title: "首页",
+    icon: IconApps,
+    name: "home",
+    children: [],
+  },
+  {
+    title: "个人中心",
+    icon: IconUser,
+    name: "center",
+    children: [
+      {
+        title: "个人信息",
+        name: "mineInfo",
+        children: [],
+      },
+    ],
+  },
+  {
+    title: "文章管理",
+    icon: IconBook,
+    name: "article",
+    children: [
+      {
+        title: "文章列表",
+        name: "articleList",
+        children: [],
+      },
+    ],
+  },
+  {
+    title: "用户管理",
+    icon: IconUserGroup,
+    name: "user",
+    children: [
+      {
+        title: "用户列表",
+        name: "userList",
+        children: [],
+      },
+    ],
+  },
+  {
+    title: "群聊管理",
+    icon: IconMessage,
+    name: "chat",
+    children: [
+      {
+        title: "群聊记录",
+        name: "chatList",
+        children: [],
+      },
+    ],
+  },
+  {
+    title: "系统管理",
+    icon: IconSettings,
+    name: "system",
+    children: [
+      {
+        title: "菜单列表",
+        name: "menuList",
+        children: [],
+      },
+    ],
+  },
+];
+
+const selectedKeys = ref([route.name]);
+const openKeys = ref([route.matched[1].name]);
+
+function clickMenuItem(name: string) {
+  router.push({ name });
+}
 </script>
 
 <style lang="scss">

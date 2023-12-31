@@ -31,7 +31,7 @@ const router = createRouter({
           children: [
             {
               path: "info",
-              name: "info",
+              name: "mineInfo",
               component: () => import("@/views/admin/center/mine_info.vue"),
             },
           ],
@@ -42,18 +42,18 @@ const router = createRouter({
           children: [
             {
               path: "list",
-              name: "list",
+              name: "articleList",
               component: () => import("@/views/admin/article/article_list.vue"),
             },
           ],
         },
         {
-          path: "users",
-          name: "users",
+          path: "user",
+          name: "user",
           children: [
             {
               path: "list",
-              name: "list",
+              name: "userList",
               component: () => import("@/views/admin/users/user_list.vue"),
             },
           ],
@@ -64,7 +64,7 @@ const router = createRouter({
           children: [
             {
               path: "list",
-              name: "list",
+              name: "chatList",
               component: () => import("@/views/admin/chat/chat_list.vue"),
             },
           ],
