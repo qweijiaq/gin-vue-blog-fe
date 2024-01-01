@@ -118,5 +118,21 @@ export const useStore = defineStore("store", {
     themeString(): string {
       return this.theme ? "light" : "dark";
     },
+    // 是否登录
+    isLogin(): boolean {
+      return this.userInfo.role !== 0;
+    },
+    // 判断是不是管理员
+    isAdmin(): boolean {
+      return this.userInfo.role == 1;
+    },
+    // 判断是不是普通用户
+    isGeneral(): boolean {
+      return this.userInfo.role == 2;
+    },
+    // 判断是不是游客
+    isTourist(): boolean {
+      return this.userInfo.role == 3;
+    },
   },
 });

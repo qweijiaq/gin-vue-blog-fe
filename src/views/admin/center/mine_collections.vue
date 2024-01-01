@@ -1,5 +1,5 @@
 <template>
-  <div>系统日志</div>
+  <div>我的收藏</div>
 </template>
 
 <script setup lang=""></script>

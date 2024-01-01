@@ -1,5 +1,5 @@
 <template>
-  <div>系统日志</div>
+  <div>消息列表</div>
 </template>
 
 <script setup lang=""></script>

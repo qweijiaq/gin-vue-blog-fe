@@ -58,11 +58,10 @@ const menuList: MenuType[] = [
     icon: IconUser,
     name: "center",
     children: [
-      {
-        title: "个人信息",
-        name: "mineInfo",
-        children: [],
-      },
+      { title: "个人信息", name: "mineInfo", children: [] },
+      { title: "我的发布", name: "mineArticles", children: [] },
+      { title: "我的收藏", name: "mineCollections", children: [] },
+      { title: "我的消息", name: "mineMessages", children: [] },
     ],
   },
   {
@@ -70,11 +69,9 @@ const menuList: MenuType[] = [
     icon: IconBook,
     name: "article",
     children: [
-      {
-        title: "文章列表",
-        name: "articleList",
-        children: [],
-      },
+      { title: "文章列表", name: "articleList", children: [] },
+      { title: "图片列表", name: "imageList", children: [] },
+      { title: "评论列表", name: "commentList", children: [] },
     ],
   },
   {
@@ -82,40 +79,25 @@ const menuList: MenuType[] = [
     icon: IconUserGroup,
     name: "user",
     children: [
-      {
-        title: "用户列表",
-        name: "userList",
-        children: [],
-      },
+      { title: "用户列表", name: "userList", children: [] },
+      { title: "消息列表", name: "messageList", children: [] },
     ],
   },
   {
     title: "群聊管理",
     icon: IconMessage,
     name: "chat",
-    children: [
-      {
-        title: "群聊记录",
-        name: "chatList",
-        children: [],
-      },
-    ],
+    children: [{ title: "群聊记录", name: "chatList", children: [] }],
   },
   {
     title: "系统管理",
     icon: IconSettings,
     name: "system",
     children: [
-      {
-        title: "菜单列表",
-        name: "menuList",
-        children: [],
-      },
-      {
-        title: "日志列表",
-        name: "logList",
-        children: [],
-      },
+      { title: "菜单列表", name: "menuList", children: [] },
+      { title: "日志列表", name: "logList", children: [] },
+      { title: "用户反馈", name: "feedbackList", children: [] },
+      { title: "广告列表", name: "advertiseList", children: [] },
     ],
   },
 ];
