@@ -3,11 +3,32 @@ import { defineStore } from "pinia";
 const theme: boolean = true; // true - light   false - dark
 const isCollapsed: boolean = false;
 
+export interface userStoreInfoType {
+  username: string;
+  nickname: string;
+  role: number; // 角色
+  user_id: number; // 用户id
+  avatar: string;
+  token: string;
+  exp: number; // 过期时间
+}
+
+const userInfo: userStoreInfoType = {
+  username: "",
+  nickname: "xxx",
+  role: 0,
+  user_id: 0,
+  avatar: "/image/logo1.png",
+  token: "",
+  exp: 0,
+};
+
 export const useStore = defineStore("store", {
   state() {
     return {
       theme, // 主题
       isCollapsed, // 后台侧边栏的搜索状态，默认展开
+      userInfo, // 用户信息
     };
   },
   actions: {

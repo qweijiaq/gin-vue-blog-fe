@@ -111,6 +111,11 @@ const menuList: MenuType[] = [
         name: "menuList",
         children: [],
       },
+      {
+        title: "日志列表",
+        name: "logList",
+        children: [],
+      },
     ],
   },
 ];

@@ -16,26 +16,7 @@
           <div class="action_theme">
             <gvb-theme />
           </div>
-          <div class="action_user_info_menu">
-            <a-dropdown>
-              <div class="dropdown">
-                <img src="/image/logo1.png" alt="" />
-                <span>xxx</span>
-                <icon-down />
-              </div>
-              <template #content>
-                <a-doption>Option 1</a-doption>
-                <a-doption disabled>Option 2</a-doption>
-                <a-doption>Option 3</a-doption>
-                <a-doption>Option 4</a-doption>
-                <a-doption>Option 5</a-doption>
-                <a-doption>Option 6</a-doption>
-                <a-doption>Option 7</a-doption>
-                <a-doption>Option 8</a-doption>
-                <a-doption>Option 9</a-doption>
-              </template>
-            </a-dropdown>
-          </div>
+          <gvb-user-info-menu />
         </div>
       </div>
       <gvb-tabs />
@@ -51,12 +32,13 @@
 </template>
 
 <script setup lang="ts">
-import { IconHome, IconDown } from "@arco-design/web-vue/es/icon";
+import { IconHome } from "@arco-design/web-vue/es/icon";
 import GvbTabs from "@/components/admin/tabs.vue";
 import GvbBreadcrumb from "@/components/admin/breadcrumb.vue";
 import GvbMenu from "@/components/admin/menu.vue";
 import GvbLogo from "@/components/admin/logo.vue";
 import GvbTheme from "@/components/common/theme.vue";
+import GvbUserInfoMenu from "@/components/common/user_info_menu.vue";
 import router from "@/router";
 import { useStore } from "@/stores";
 
@@ -142,29 +124,6 @@ function onCollapse(isCollapsed: boolean) {
       .actions {
         display: flex;
         align-items: center;
-
-        .action_user_info_menu {
-          display: flex;
-          align-items: center;
-
-          .dropdown {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-
-            img {
-              width: 30px;
-              height: 30px;
-              border-radius: 50%;
-            }
-
-            span {
-              font-size: 14px;
-              color: var(--text);
-              margin: 0 5px;
-            }
-          }
-        }
 
         .action_icon {
           margin-right: 10px;

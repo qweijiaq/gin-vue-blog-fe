@@ -29,6 +29,7 @@ import { watch } from "vue";
 import { IconClose } from "@arco-design/web-vue/es/icon";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { onMounted } from "vue";
+import type { tabType } from "@/types";
 
 const route = useRoute();
 
@@ -68,14 +69,9 @@ onMounted(() => {
   slidesPerView.value = count;
 });
 
-interface tabItem {
-  name: string;
-  title: string;
-}
+const tabList: Ref<tabType[]> = ref([{ name: "home", title: "首页" }]);
 
-const tabList: Ref<tabItem[]> = ref([{ name: "home", title: "首页" }]);
-
-function clickItem(item: tabItem) {
+function clickItem(item: tabType) {
   router.push({ name: item.name });
 }
 
@@ -108,7 +104,7 @@ watch(
 );
 
 // closeItem 点击关闭 tab
-function closeItem(item: tabItem) {
+function closeItem(item: tabType) {
   // 支持点击鼠标中键关闭
   // 这里主要是防止对「首页」点击鼠标中键时被删除
   if (item.name === "home") {

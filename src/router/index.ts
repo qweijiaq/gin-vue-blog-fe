@@ -114,9 +114,25 @@ const router = createRouter({
               },
               component: () => import("@/views/admin/system/menu_list.vue"),
             },
+            {
+              path: "logList",
+              name: "logList",
+              meta: {
+                title: "日志列表",
+              },
+              component: () => import("@/views/admin/system/log_list.vue"),
+            },
           ],
         },
       ],
+    },
+    {
+      path: "/login",
+      name: "login",
+      meta: {
+        title: "登录",
+      },
+      component: () => import("@/views/login/index.vue"),
     },
   ],
 });
