@@ -49,19 +49,44 @@
   </a-form>
 </template>
 <script lang="ts" setup>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { IconLock, IconUser } from "@arco-design/web-vue/es/icon";
-import { loginEmailType } from "@/api/user";
+import type { loginEmailType } from "@/api/user";
 import { loginEmailApi } from "@/api/user";
+import { Message } from "@arco-design/web-vue";
+import { useStore } from "@/stores";
+
+const store = useStore();
+
+const emits = defineEmits(["ok"]);
 
 const form = reactive<loginEmailType>({
   user_name: "",
   password: "",
 });
 
+const formRef = ref();
+
+function formReset() {
+  formRef.value.resetFields(Object.keys(form));
+  formRef.value.clearValidate(Object.keys(form));
+}
+
+defineExpose({
+  formReset,
+});
+
 async function loginEmail() {
+  let value = await formRef.value.validate();
+  if (value) return;
   let res = await loginEmailApi(form);
-  console.log(res);
+  if (res.code) {
+    Message.error(res.msg);
+    return;
+  }
+  store.setToken(res.data);
+  emits("ok");
+  Message.success(res.msg);
 }
 </script>
 

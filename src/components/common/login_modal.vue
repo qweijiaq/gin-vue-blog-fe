@@ -8,27 +8,28 @@
       :footer="false"
       @cancel="close"
     >
-      <gvb-login-form ref="gvbLoginForm" @ok="close" />
+      <gvb-login-form ref="loginForm" @ok="close" />
     </Modal>
   </div>
 </template>
 
 <script setup lang="ts">
 import GvbLoginForm from "@/components/common/login_form.vue";
-import { ref } from "vue";
 import { Modal } from "@arco-design/web-vue";
+import { ref } from "vue";
 
 const props = defineProps({
   visible: {
     type: Boolean,
   },
 });
-const emits = defineEmits(["update:visible", "close"]);
-const gvbLoginForm = ref();
+const emits = defineEmits(["update:visible"]);
+
+const loginForm = ref();
+
 function close() {
   emits("update:visible", false);
-  emits("close");
-  gvbLoginForm.value.formReset();
+  loginForm.value.formReset();
 }
 </script>
 

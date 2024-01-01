@@ -1,3 +1,6 @@
+import { userInfoApi } from "@/api/user";
+import { parseToken } from "@/utils/jwt";
+import { Message } from "@arco-design/web-vue";
 import { defineStore } from "pinia";
 
 const theme: boolean = true; // true - light   false - dark
@@ -59,6 +62,51 @@ export const useStore = defineStore("store", {
 
     setCollapsed(isCollapsed: boolean) {
       this.isCollapsed = isCollapsed;
+    },
+
+    async setToken(token: string) {
+      this.userInfo.token = token;
+      // 调用户信息的接口
+      let res = await userInfoApi();
+      let info = parseToken(token);
+      let data = res.data;
+      this.userInfo = {
+        username: data.user_name,
+        nickname: data.nick_name,
+        role: info.role,
+        user_id: info.user_id,
+        avatar: data.avatar,
+        token: token,
+        exp: info.exp,
+      };
+      localStorage.setItem("userInfo", JSON.stringify(this.userInfo));
+    },
+
+    loadToken() {
+      let val = localStorage.getItem("userInfo");
+      if (val === null) {
+        return;
+      }
+      try {
+        this.userInfo = JSON.parse(val);
+      } catch (e) {
+        this.clearUserInfo();
+        return;
+      }
+      // 判断token是不是过期了
+      let exp = Number(this.userInfo.exp) * 1000;
+      let nowTime = new Date().getTime();
+      if (exp - nowTime <= 0) {
+        // 过期
+        Message.warning("登录已过期");
+        this.clearUserInfo();
+        return;
+      }
+    },
+
+    clearUserInfo() {
+      this.userInfo = userInfo;
+      localStorage.removeItem("userInfo");
     },
   },
   getters: {
