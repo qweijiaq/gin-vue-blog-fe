@@ -1,4 +1,4 @@
-import { userInfoApi } from "@/api/user";
+import { logoutApi, userInfoApi } from "@/api/user";
 import { parseToken } from "@/utils/jwt";
 import { Message } from "@arco-design/web-vue";
 import { defineStore } from "pinia";
@@ -107,6 +107,11 @@ export const useStore = defineStore("store", {
     clearUserInfo() {
       this.userInfo = userInfo;
       localStorage.removeItem("userInfo");
+    },
+
+    async logout() {
+      await logoutApi();
+      this.clearUserInfo();
     },
   },
   getters: {

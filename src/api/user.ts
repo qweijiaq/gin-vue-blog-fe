@@ -11,6 +11,10 @@ export function loginEmailApi(
   return useAxios.post("/api/email_login", request);
 }
 
+export function logoutApi(): Promise<baseResponse<string>> {
+  return useAxios.post("/api/logout");
+}
+
 export interface userInfoType {
   id: number;
   created_at: string;
