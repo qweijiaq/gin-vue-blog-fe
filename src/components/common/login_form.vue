@@ -36,7 +36,7 @@
       </a-input>
     </a-form-item>
 
-    <a-button type="primary">登录</a-button>
+    <a-button type="primary" @click="loginEmail">登录</a-button>
 
     <div class="other_login">
       <div class="label">第三方登录</div>
@@ -51,11 +51,17 @@
 <script lang="ts" setup>
 import { reactive } from "vue";
 import { IconLock, IconUser } from "@arco-design/web-vue/es/icon";
+import { loginEmailType } from "@/api/user";
+import { loginEmailApi } from "@/api/user";
 
-const form = reactive({
+const form = reactive<loginEmailType>({
   user_name: "",
   password: "",
 });
+
+async function loginEmail() {
+  let res = await loginEmailApi(form);
+}
 </script>
 
 <style lang="scss" scoped>
