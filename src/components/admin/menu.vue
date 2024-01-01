@@ -4,6 +4,8 @@
       @menu-item-click="clickMenuItem"
       v-model:selected-keys="selectedKeys"
       v-model:open-keys="openKeys"
+      show-collapse-button
+      @collapse="onCollapse"
     >
       <template v-for="item in menuList" :key="item.name">
         <a-menu-item :key="item.name" v-if="item.children?.length === 0">
@@ -112,6 +114,12 @@ const menuList: MenuType[] = [
     ],
   },
 ];
+
+const emits = defineEmits(["collapse"]);
+
+function onCollapse(value: boolean, type: string) {
+  emits("collapse", value);
+}
 
 const selectedKeys = ref([route.name]);
 const openKeys = ref([route.matched[1].name]);

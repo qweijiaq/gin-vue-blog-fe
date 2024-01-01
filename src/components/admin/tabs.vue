@@ -169,7 +169,7 @@ loadStoreByTabList();
   display: flex;
   align-items: center;
   position: relative;
-  background-color: var(--color-bg-1);
+  background-color: var(--color-bg-2);
 
   .mySwiper {
     width: calc(100% - 94px);
@@ -192,6 +192,7 @@ loadStoreByTabList();
 
   .tab_item {
     border-radius: 5px;
+    background-color: var(--color-bg-1);
     border: 1px solid var(--bg);
     padding: 2px 8px;
     margin-right: 10px;

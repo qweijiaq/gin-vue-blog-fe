@@ -1,11 +1,13 @@
 import { defineStore } from "pinia";
 
 const theme: boolean = true; // true - light   false - dark
+const isCollapsed: boolean = false;
 
 export const useStore = defineStore("store", {
   state() {
     return {
-      theme: theme, // 主题
+      theme, // 主题
+      isCollapsed, // 后台侧边栏的搜索状态，默认展开
     };
   },
   actions: {
@@ -32,6 +34,10 @@ export const useStore = defineStore("store", {
       } catch (e) {
         return;
       }
+    },
+
+    setCollapsed(isCollapsed: boolean) {
+      this.isCollapsed = isCollapsed;
     },
   },
   getters: {

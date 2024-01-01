@@ -1,8 +1,8 @@
 <template>
   <div class="admin">
-    <aside>
-      <gvb-logo />
-      <gvb-menu />
+    <aside :class="{ isCollapsed: store.isCollapsed }">
+      <gvb-logo :hidden="store.isCollapsed" />
+      <gvb-menu @collapse="onCollapse" />
     </aside>
     <main>
       <div class="head">
@@ -58,10 +58,19 @@ import GvbMenu from "@/components/admin/menu.vue";
 import GvbLogo from "@/components/admin/logo.vue";
 import GvbTheme from "@/components/common/theme.vue";
 import router from "@/router";
+import { useStore } from "@/stores";
+
+const store = useStore();
 
 // goHome 去首页
 function goHome() {
   router.push({ name: "index" });
+}
+
+function onCollapse(isCollapsed: boolean) {
+  // true 代表折叠
+  // false 代表展开
+  store.setCollapsed(isCollapsed);
 }
 </script>
 
@@ -75,13 +84,50 @@ function goHome() {
     width: 240px;
     height: 100vh;
     border-right: 1px solid var(--bg);
-    height: 100vh;
-    background-color: var(--color-bg-1);
+    background-color: var(--color-bg-2);
+    transition: all 0.3s;
+    position: relative;
+
+    > .menu {
+      height: calc(100vh - 90px);
+
+      .arco-menu {
+        position: inherit;
+      }
+
+      .arco-menu-collapse-button {
+        opacity: 0;
+        transition: all 0.3s;
+        position: absolute;
+        left: 240px;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    &:hover {
+      .arco-menu-collapse-button {
+        opacity: 1;
+      }
+    }
+  }
+
+  aside.isCollapsed {
+    width: 48px;
+    transition: all 0.3s;
+
+    .arco-menu-collapse-button {
+      left: 48px;
+    }
+
+    & ~ main {
+      width: calc(100vw - 48px);
+    }
   }
 
   main {
     width: calc(100% - 240px);
-    overflow-x: hidden;
+    transition: all 0.3s;
 
     .head {
       width: 100%;
@@ -91,7 +137,7 @@ function goHome() {
       justify-content: space-between;
       padding: 0 20px;
       align-items: center;
-      background-color: var(--color-bg-1);
+      background-color: var(--color-bg-2);
 
       .actions {
         display: flex;
