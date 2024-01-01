@@ -61,6 +61,7 @@ const form = reactive<loginEmailType>({
 
 async function loginEmail() {
   let res = await loginEmailApi(form);
+  console.log(res);
 }
 </script>
 
