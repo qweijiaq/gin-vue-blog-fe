@@ -1,20 +1,32 @@
 <template>
   <div class="login">
     <div class="login_mask">
-      <gvb-login-form @ok="ok" />
+      <gvb-login-form @ok="ok" :qq-redirect-path="back" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import GvbLoginForm from "@/components/common/login_form.vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { qqLoginApi } from "@/api/user";
+import { Message } from "@arco-design/web-vue";
+import { useStore } from "@/stores";
 
 const router = useRouter();
+const store = useStore();
+const route = useRoute();
+
+interface routerQuery {
+  flag?: string;
+  code?: string;
+}
 
 interface historyState {
   back: string;
 }
+
+const back = (window.history.state as historyState).back;
 
 function ok() {
   let back = (window.history.state as historyState).back;
@@ -25,6 +37,28 @@ function ok() {
   }
   router.push(back);
 }
+
+async function init(query: routerQuery) {
+  if (!query.code || !query.flag) {
+    return;
+  }
+  let res = await qqLoginApi(query.code);
+  if (res.code) {
+    Message.error(res.msg);
+    return;
+  }
+  Message.success(res.msg);
+  store.setToken(res.data);
+
+  // 重定向到点击登录的页面
+  let path = localStorage.getItem("redirectPath");
+  if (path === null) {
+    path = "/";
+  }
+  router.push(path);
+}
+
+init(route.query);
 </script>
 
 <style lang="scss" scoped>

@@ -15,6 +15,14 @@ export function logoutApi(): Promise<baseResponse<string>> {
   return useAxios.post("/api/logout");
 }
 
+export function loginQQPathApi(): Promise<baseResponse<string>> {
+  return useAxios.get("/api/qq_login_path");
+}
+
+export function qqLoginApi(code: string): Promise<baseResponse<string>> {
+  return useAxios.post("/api/login", null, { params: { code } });
+}
+
 export interface userInfoType {
   id: number;
   created_at: string;
