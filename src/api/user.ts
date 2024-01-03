@@ -1,4 +1,9 @@
-import { useAxios, type baseResponse } from ".";
+import {
+  useAxios,
+  type baseResponse,
+  type paramsType,
+  type listDataType,
+} from ".";
 
 export interface loginEmailType {
   user_name: string;
@@ -44,4 +49,10 @@ export interface userInfoType {
 
 export function userInfoApi(): Promise<baseResponse<userInfoType>> {
   return useAxios.get("/api/user_info");
+}
+
+export function userListApi(
+  params: paramsType
+): Promise<baseResponse<listDataType<userInfoType>>> {
+  return useAxios.get("/api/users", { params });
 }

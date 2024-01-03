@@ -7,8 +7,8 @@ const theme: boolean = true; // true - light   false - dark
 const isCollapsed: boolean = false;
 
 export interface userStoreInfoType {
-  username: string;
-  nickname: string;
+  user_name: string;
+  nick_name: string;
   role: number; // 角色
   user_id: number; // 用户id
   avatar: string;
@@ -17,11 +17,11 @@ export interface userStoreInfoType {
 }
 
 const userInfo: userStoreInfoType = {
-  username: "",
-  nickname: "xxx",
+  user_name: "",
+  nick_name: "xxx",
   role: 0,
   user_id: 0,
-  avatar: "/image/logo1.png",
+  avatar: "",
   token: "",
   exp: 0,
 };
@@ -71,8 +71,8 @@ export const useStore = defineStore("store", {
       let info = parseToken(token);
       let data = res.data;
       this.userInfo = {
-        username: data.user_name,
-        nickname: data.nick_name,
+        user_name: data.user_name,
+        nick_name: data.nick_name,
         role: info.role,
         user_id: info.user_id,
         avatar: data.avatar,
