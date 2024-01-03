@@ -1,4 +1,5 @@
 import { useStore } from "@/stores";
+import type { optionType } from "@/types";
 import { Message } from "@arco-design/web-vue";
 import axios from "axios";
 
@@ -54,4 +55,12 @@ export function defaultDeleteApi<T extends number | string>(
       id_list: idList,
     },
   });
+}
+
+// 通用请求 option
+export function defaultOptionApi(
+  url: string,
+  params?: paramsType
+): Promise<baseResponse<optionType[]>> {
+  return useAxios.get(url, { params });
 }

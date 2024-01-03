@@ -10,6 +10,7 @@
           style="width: 130px"
           :options="actionOptions"
           v-model="actionValue"
+          allow-clear
         ></a-select>
         <a-button
           status="danger"
@@ -25,11 +26,20 @@
           @search="search"
         ></a-input-search>
       </div>
-      <div class="action_other_search"></div>
-      <div class="action_filter">
-        <a-select placeholder="过滤"></a-select>
+      <slot name="action_other_search">
+        <div class="action_other_search"></div>
+      </slot>
+      <div class="action_filter" v-if="filterGroup.length">
+        <a-select
+          :placeholder="item.label"
+          v-for="item in filterGroup"
+          :options="item.options"
+          style="width: 130px"
+          allow-clear
+          @change="filterChange(item, $event)"
+        ></a-select>
       </div>
-      <div class="action_slot"></div>
+      <slot name="action_slot"></slot>
       <div class="action_flush">
         <a-button @click="flush"><icon-refresh /></a-button>
       </div>
@@ -105,9 +115,11 @@ import { ref } from "vue";
 import { reactive } from "vue";
 import type { paramsType, baseResponse, listDataType } from "@/api/index";
 import type { TableColumnData, TableRowSelection } from "@arco-design/web-vue";
-import { dateTimeFormat } from "@/utils/timeFormat";
 import { Message } from "@arco-design/web-vue";
 import { defaultDeleteApi } from "@/api";
+import type { optionType } from "@/types/index";
+import { dateTimeFormat } from "@/utils/timeFormat";
+import { defaultOptionApi } from "@/api";
 
 interface Props {
   url: (params: paramsType) => Promise<baseResponse<listDataType<any>>>; // 请求列表数据的api函数
@@ -119,6 +131,7 @@ interface Props {
   noActionGroup?: boolean; // 是否不启用操作组
   actionGroup?: actionOptionType[]; // 操作组
   noCheck?: boolean; // 不能选择
+  filterGroup?: filterOptionType[]; // 过滤组
 }
 
 // 操作分组的类型
@@ -126,6 +139,17 @@ export interface actionOptionType {
   label: string;
   value?: number;
   callback?: (idList: (number | string)[]) => Promise<boolean>;
+}
+
+// 过滤函数的类型
+type filterFunc = (params?: paramsType) => Promise<baseResponse<optionType[]>>;
+
+export interface filterOptionType {
+  label: string;
+  value?: number;
+  column: string;
+  source: optionType[] | string | filterFunc;
+  options?: optionType[]; // 可以是现成的数据，也可以是一个url地址，也可以是一个函数
 }
 
 export type RecordType<T> = T;
@@ -165,6 +189,9 @@ const actionOptions = ref<actionOptionType[]>([
 ]);
 const actionValue = ref<number | undefined | "">(undefined);
 
+// 过滤组
+const filterGroup = ref<filterOptionType[]>([]);
+
 // 获取用户列表
 async function getList(p?: paramsType & any) {
   if (p) {
@@ -189,6 +216,40 @@ function initActionGroup() {
 }
 initActionGroup();
 
+// 初始化过滤组
+async function initFilterGroup() {
+  if (!props.filterGroup) return;
+  for (let i = 0; i < props.filterGroup.length; i++) {
+    // 处理source的数据
+    const item = props.filterGroup[i];
+    let source: optionType[] = [];
+    switch (typeof item.source) {
+      case "function":
+        let res1 = await (item.source as filterFunc)();
+        source = res1.data;
+        break;
+      case "object":
+        source = item.source as optionType[];
+        break;
+      case "string":
+        // 请求接口
+        let res2 = await defaultOptionApi(item.source as string);
+        source = res2.data;
+        break;
+    }
+
+    filterGroup.value.push({
+      label: item.label,
+      value: i,
+      column: item.column,
+      options: source,
+      source: item.source,
+    });
+  }
+}
+initFilterGroup();
+
+// 改变页数
 function pageChange() {
   getList();
 }
@@ -271,6 +332,11 @@ function actionMethod() {
       return;
     }
   });
+}
+
+// 过滤
+function filterChange(item: any, val: any) {
+  getList({ [item.column]: val });
 }
 </script>
 
