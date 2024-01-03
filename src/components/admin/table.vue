@@ -40,7 +40,7 @@
           :row-key="rowKey"
           :columns="columns"
           :data="data.list"
-          :row-selection="rowSelection"
+          :row-selection="props.noCheck ? undefined : rowSelection"
           v-model:selectedKeys="selectedKeys"
           :pagination="false"
         >
@@ -118,6 +118,7 @@ interface Props {
   defaultDelete?: boolean; // 是否启用默认删除
   noActionGroup?: boolean; // 是否不启用操作组
   actionGroup?: actionOptionType[]; // 操作组
+  noCheck?: boolean; // 不能选择
 }
 
 // 操作分组的类型
