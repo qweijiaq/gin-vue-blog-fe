@@ -1,6 +1,13 @@
 <template>
   <div>
-    <gvb-table :url="userListApi" :columns="columns">
+    <gvb-table
+      :url="userListApi"
+      :columns="columns"
+      @add="add"
+      @edit="edit"
+      add-label="添加用户"
+      default-delete
+    >
       <template #avatar="{ record }: { record: userInfoType }">
         <a-avatar :imageUrl="record.avatar"></a-avatar>
       </template>
@@ -21,6 +28,12 @@ const columns = [
   { title: "注册时间", slotName: "created_at" },
   { title: "操作", slotName: "action" },
 ];
+
+// 添加用户
+function add() {}
+
+// 编辑用户
+function edit() {}
 </script>
 
 <style lang="scss"></style>

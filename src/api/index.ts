@@ -43,3 +43,15 @@ useAxios.interceptors.response.use(
     return Promise.reject(err.message);
   }
 );
+
+// 通用删除
+export function defaultDeleteApi<T extends number | string>(
+  url: string,
+  idList: T[]
+): Promise<baseResponse<string>> {
+  return useAxios.delete(url, {
+    data: {
+      id_list: idList,
+    },
+  });
+}

@@ -2,10 +2,21 @@
   <div class="table">
     <div class="table_head">
       <div class="action_create">
-        <a-button type="primary">添加</a-button>
+        <a-button type="primary" @click="add">{{ addLabel }}</a-button>
       </div>
-      <div class="action_group">
-        <a-select placeholder="操作"></a-select>
+      <div class="action_group" v-if="!props.noActionGroup">
+        <a-select
+          placeholder="操作"
+          style="width: 130px"
+          :options="actionOptions"
+          v-model="actionValue"
+        ></a-select>
+        <a-button
+          status="danger"
+          v-if="actionValue !== undefined && actionValue !== ''"
+          @click="actionMethod"
+          >执行</a-button
+        >
       </div>
       <div class="action_search">
         <a-input-search
@@ -26,7 +37,7 @@
     <div class="table_container">
       <div class="table_content">
         <a-table
-          row-key="id"
+          :row-key="rowKey"
           :columns="columns"
           :data="data.list"
           :row-selection="rowSelection"
@@ -49,8 +60,15 @@
               <a-table-column v-else :title="(col.title as string)">
                 <template #cell="{ record }" v-if="col.slotName === 'action'">
                   <div class="cell_actions">
-                    <a-button type="primary">编辑</a-button>
-                    <a-button status="danger">删除</a-button>
+                    <a-button type="primary" @click="edit(record)"
+                      >编辑</a-button
+                    >
+                    <a-popconfirm
+                      content="是否确认删除?"
+                      @ok="removeSingle(record)"
+                    >
+                      <a-button status="danger" type="primary">删除</a-button>
+                    </a-popconfirm>
                   </div>
                 </template>
                 <template
@@ -89,16 +107,37 @@ import type { paramsType, baseResponse, listDataType } from "@/api/index";
 import type { TableColumnData, TableRowSelection } from "@arco-design/web-vue";
 import { dateTimeFormat } from "@/utils/timeFormat";
 import { Message } from "@arco-design/web-vue";
+import { defaultDeleteApi } from "@/api";
 
 interface Props {
   url: (params: paramsType) => Promise<baseResponse<listDataType<any>>>; // 请求列表数据的api函数
   columns: TableColumnData[]; // 字段
   limit?: number; // 显示多少条，默认10条
+  rowKey?: string; // 选中的时候，按照什么选，默认是id
+  addLabel?: string; // 添加按钮的提示文字
+  defaultDelete?: boolean; // 是否启用默认删除
+  noActionGroup?: boolean; // 是否不启用操作组
+  actionGroup?: actionOptionType[]; // 操作组
 }
+
+// 操作分组的类型
+export interface actionOptionType {
+  label: string;
+  value?: number;
+  callback?: (idList: (number | string)[]) => Promise<boolean>;
+}
+
+export type RecordType<T> = T;
 
 const props = defineProps<Props>();
 
-const { limit = 10 } = props;
+const emits = defineEmits<{
+  (e: "add"): void; // 添加的事件
+  (e: "edit", record: RecordType<any>): void; // 编辑的事件
+  (e: "remove", idList: (number | string)[]): void; // 删除的事件，单删，批量删除
+}>();
+
+const { limit = 10, rowKey = "id", addLabel = "添加" } = props;
 
 const data = reactive<listDataType<any>>({
   list: [],
@@ -119,6 +158,13 @@ const params = reactive<paramsType>({
   key: "",
 });
 
+// 操作组
+const actionOptions = ref<actionOptionType[]>([
+  { label: "批量删除", value: 0 },
+]);
+const actionValue = ref<number | undefined | "">(undefined);
+
+// 获取用户列表
 async function getList(p?: paramsType & any) {
   if (p) {
     Object.assign(params, p);
@@ -127,11 +173,62 @@ async function getList(p?: paramsType & any) {
   data.list = res.data.list;
   data.count = res.data.count;
 }
-
 getList();
+
+// 初始化用户组
+function initActionGroup() {
+  if (!props.actionGroup) return;
+  for (let i = 0; i < props.actionGroup.length; i++) {
+    actionOptions.value.push({
+      label: props.actionGroup[i].label,
+      value: i + 1,
+      callback: props.actionGroup[i].callback,
+    });
+  }
+}
+initActionGroup();
 
 function pageChange() {
   getList();
+}
+
+// 添加
+function add() {
+  emits("add");
+}
+
+// 编辑
+function edit(record: RecordType<any>) {
+  emits("edit", record);
+}
+
+// 从列表页的api里面匹配路径
+const urlRegex = /\.get\("(.*?)",/;
+
+// 单个删除
+async function removeSingle(record: RecordType<any>) {
+  let id = record[rowKey];
+  removeBatch([id]);
+}
+
+// 批量删除
+async function removeBatch(idList: (number | string)[]) {
+  if (props.defaultDelete) {
+    let regexResult = urlRegex.exec(props.url.toString());
+    if (regexResult === null || regexResult.length !== 2) {
+      return;
+    }
+    let res = await defaultDeleteApi(regexResult[1], idList);
+    if (res.code) {
+      Message.error(res.msg);
+      return;
+    }
+    Message.success(res.msg);
+    selectedKeys.value = [];
+    getList();
+    return;
+  }
+  emits("remove", idList);
 }
 
 // 搜索
@@ -145,6 +242,34 @@ function search() {
 function flush() {
   Message.success("刷新成功");
   getList();
+}
+
+// 点击操作执行
+function actionMethod() {
+  if (actionValue.value === "") {
+    return;
+  }
+  // 判断是不是 0
+  if (actionValue.value === 0) {
+    // 批量删除
+    if (selectedKeys.value.length === 0) {
+      Message.warning("请选择要删除的记录");
+      return;
+    }
+    removeBatch(selectedKeys.value);
+    return;
+  }
+  const action = actionOptions.value[actionValue.value as number];
+  if (!action.callback) {
+    return;
+  }
+  action.callback(selectedKeys.value).then((res) => {
+    if (res) {
+      selectedKeys.value = [];
+      getList();
+      return;
+    }
+  });
 }
 </script>
 
@@ -162,6 +287,14 @@ function flush() {
 
     > div {
       margin-right: 10px;
+    }
+
+    .action_group {
+      display: flex;
+
+      > button {
+        margin-left: 10px;
+      }
     }
 
     .action_flush {
