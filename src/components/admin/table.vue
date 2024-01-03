@@ -8,7 +8,11 @@
         <a-select placeholder="操作"></a-select>
       </div>
       <div class="action_search">
-        <a-input-search placeholder="搜索"></a-input-search>
+        <a-input-search
+          placeholder="搜索"
+          v-model="params.key"
+          @search="search"
+        ></a-input-search>
       </div>
       <div class="action_other_search"></div>
       <div class="action_filter">
@@ -16,12 +20,13 @@
       </div>
       <div class="action_slot"></div>
       <div class="action_flush">
-        <a-button><icon-refresh /></a-button>
+        <a-button @click="flush"><icon-refresh /></a-button>
       </div>
     </div>
     <div class="table_container">
       <div class="table_content">
         <a-table
+          row-key="id"
           :columns="columns"
           :data="data.list"
           :row-selection="rowSelection"
@@ -63,7 +68,14 @@
         </a-table>
       </div>
       <div class="table_page">
-        <a-pagination :total="data.count" show-jumper />
+        <a-pagination
+          :total="data.count"
+          :default-page-size="params.limit"
+          v-model:current="params.page"
+          @change="pageChange"
+          showTotal
+          show-jumper
+        />
       </div>
     </div>
   </div>
@@ -74,37 +86,66 @@ import { IconRefresh } from "@arco-design/web-vue/es/icon";
 import { ref } from "vue";
 import { reactive } from "vue";
 import type { paramsType, baseResponse, listDataType } from "@/api/index";
-import type { TableColumnData } from "@arco-design/web-vue";
+import type { TableColumnData, TableRowSelection } from "@arco-design/web-vue";
 import { dateTimeFormat } from "@/utils/timeFormat";
+import { Message } from "@arco-design/web-vue";
 
 interface Props {
   url: (params: paramsType) => Promise<baseResponse<listDataType<any>>>; // 请求列表数据的api函数
   columns: TableColumnData[]; // 字段
+  limit?: number; // 显示多少条，默认10条
 }
 
 const props = defineProps<Props>();
+
+const { limit = 10 } = props;
 
 const data = reactive<listDataType<any>>({
   list: [],
   count: 0,
 });
 
-async function getList() {
-  let res = await props.url({});
-  console.log(res.data.list);
+const selectedKeys = ref(["Jane Doe", "Alisa Ross"]);
+
+const rowSelection = reactive<TableRowSelection>({
+  type: "checkbox",
+  showCheckedAll: true,
+  onlyCurrent: false,
+});
+
+const params = reactive<paramsType>({
+  page: 1,
+  limit,
+  key: "",
+});
+
+async function getList(p?: paramsType & any) {
+  if (p) {
+    Object.assign(params, p);
+  }
+  let res = await props.url(params);
   data.list = res.data.list;
   data.count = res.data.count;
 }
 
 getList();
 
-const selectedKeys = ref(["Jane Doe", "Alisa Ross"]);
+function pageChange() {
+  getList();
+}
 
-const rowSelection = reactive({
-  type: "checkbox",
-  showCheckedAll: true,
-  onlyCurrent: false,
-});
+// 搜索
+function search() {
+  // 搜索的时候，页数就在第一页
+  params.page = 1;
+  getList();
+}
+
+// 刷新
+function flush() {
+  Message.success("刷新成功");
+  getList();
+}
 </script>
 
 <style lang="scss">
