@@ -35,7 +35,9 @@
       </div>
       <div class="action_search">
         <a-input-search
-          placeholder="搜索"
+          :placeholder="searchPlaceholder"
+          style="width: 130px"
+          allow-clear
           v-model="params.key"
           @search="search"
         ></a-input-search>
@@ -161,6 +163,8 @@ interface Props {
   noAdd?: boolean; // 没有添加
   noEdit?: boolean; // 没有编辑
   noDelete?: boolean; // 没有单独的删除
+  searchPlaceholder?: string; // 模糊匹配的提示词
+  defaultParams?: paramsType & any; //第一次查询的查询参数
 }
 
 // 操作分组的类型
@@ -191,7 +195,12 @@ const emits = defineEmits<{
   (e: "remove", idList: (number | string)[]): void; // 删除的事件，单删，批量删除
 }>();
 
-const { limit = 10, rowKey = "id", addLabel = "添加" } = props;
+const {
+  limit = 10,
+  rowKey = "id",
+  addLabel = "添加",
+  searchPlaceholder = "搜索",
+} = props;
 
 const data = reactive<listDataType<any>>({
   list: [],
@@ -235,7 +244,11 @@ async function getList(p?: paramsType & any) {
   data.list = res.data.list;
   data.count = res.data.count;
 }
-getList();
+getList(props.defaultParams);
+
+defineExpose({
+  getList,
+});
 
 // 初始化用户组
 function initActionGroup() {

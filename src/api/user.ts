@@ -56,3 +56,16 @@ export function userListApi(
 ): Promise<baseResponse<listDataType<userInfoType>>> {
   return useAxios.get("/api/users", { params });
 }
+
+// 创建用户接口
+export interface userCreateRequest {
+  nick_name: string;
+  password: string;
+  role: number;
+  user_name: string;
+}
+export function userCreateApi(
+  data: userCreateRequest
+): Promise<baseResponse<string>> {
+  return useAxios.post("/api/users", data);
+}
