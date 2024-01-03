@@ -1,7 +1,7 @@
 <template>
   <div class="table">
     <div class="table_head">
-      <div class="action_create">
+      <div class="action_create" v-if="!props.noAdd">
         <a-button type="primary" @click="add">{{ addLabel }}</a-button>
       </div>
       <div class="action_group" v-if="!props.noActionGroup">
@@ -12,8 +12,22 @@
           v-model="actionValue"
           allow-clear
         ></a-select>
+        <a-popconfirm
+          content="是否确认执行此操作?"
+          v-if="!props.noConfirm"
+          @ok="actionMethod"
+        >
+          <a-button
+            status="danger"
+            type="primary"
+            v-if="actionValue !== undefined && actionValue !== ''"
+            >执行</a-button
+          >
+        </a-popconfirm>
         <a-button
+          v-else
           status="danger"
+          type="primary"
           v-if="actionValue !== undefined && actionValue !== ''"
           @click="actionMethod"
           >执行</a-button
@@ -44,7 +58,7 @@
         <a-button @click="flush"><icon-refresh /></a-button>
       </div>
     </div>
-    <div class="table_container">
+    <a-spin class="table_container" :loading="isLoading" tip="加载中...">
       <div class="table_content">
         <a-table
           :row-key="rowKey"
@@ -70,15 +84,26 @@
               <a-table-column v-else :title="(col.title as string)">
                 <template #cell="{ record }" v-if="col.slotName === 'action'">
                   <div class="cell_actions">
-                    <a-button type="primary" @click="edit(record)"
+                    <slot name="action_left" :record="record"></slot>
+                    <a-button
+                      type="primary"
+                      v-if="!props.noEdit"
+                      @click="edit(record)"
                       >编辑</a-button
                     >
+                    <slot name="action_middle" :record="record"></slot>
                     <a-popconfirm
                       content="是否确认删除?"
                       @ok="removeSingle(record)"
                     >
-                      <a-button status="danger" type="primary">删除</a-button>
+                      <a-button
+                        status="danger"
+                        type="primary"
+                        v-if="!props.noDelete"
+                        >删除</a-button
+                      >
                     </a-popconfirm>
+                    <slot name="action_right" :record="record"></slot>
                   </div>
                 </template>
                 <template
@@ -105,7 +130,7 @@
           show-jumper
         />
       </div>
-    </div>
+    </a-spin>
   </div>
 </template>
 
@@ -132,6 +157,10 @@ interface Props {
   actionGroup?: actionOptionType[]; // 操作组
   noCheck?: boolean; // 不能选择
   filterGroup?: filterOptionType[]; // 过滤组
+  noConfirm?: boolean; // 关闭二次确认
+  noAdd?: boolean; // 没有添加
+  noEdit?: boolean; // 没有编辑
+  noDelete?: boolean; // 没有单独的删除
 }
 
 // 操作分组的类型
@@ -169,7 +198,7 @@ const data = reactive<listDataType<any>>({
   count: 0,
 });
 
-const selectedKeys = ref(["Jane Doe", "Alisa Ross"]);
+const selectedKeys = ref([]);
 
 const rowSelection = reactive<TableRowSelection>({
   type: "checkbox",
@@ -192,12 +221,17 @@ const actionValue = ref<number | undefined | "">(undefined);
 // 过滤组
 const filterGroup = ref<filterOptionType[]>([]);
 
+// 加载中
+const isLoading = ref(false);
+
 // 获取用户列表
 async function getList(p?: paramsType & any) {
   if (p) {
     Object.assign(params, p);
   }
+  isLoading.value = true;
   let res = await props.url(params);
+  isLoading.value = false;
   data.list = res.data.list;
   data.count = res.data.count;
 }
@@ -377,6 +411,7 @@ function filterChange(item: any, val: any) {
 
   .table_container {
     padding: 10px 20px 20px 20px;
+    width: 100%;
 
     .table_content {
       .cell_actions {
