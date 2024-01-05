@@ -5,7 +5,7 @@ import type { chatGroupConfigType } from "@/api/chat";
 export interface siteInfoType {
   addr: string;
   bei_an: string;
-  bilibili_url: string;
+  csdn_url: string;
   created_at: string;
   email: string;
   gitee_url: string;
