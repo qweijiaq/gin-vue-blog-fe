@@ -45,7 +45,7 @@ const helpList = [
     content: `
 <p>先去高德开放平台（<a href="https://lbs.amap.com/" target="_blank">https://lbs.amap.com/</a>）进行申请</p>
 <p>然后创建一个web服务应用，勾选ip定位和天气查询，然后提交，等待审核</p>
-<p>审核成功之后，就会 key这个参数</p>
+<p>审核成功之后，就会出现 key这个参数</p>
 <p>
 <img src="https://image.fengfengzhidao.com/pic/20231005150903.png" alt="">
 </p>

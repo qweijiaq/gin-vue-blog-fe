@@ -55,10 +55,10 @@
             ></gvb-upload-image>
           </a-form-item>
           <a-form-item field="wechat_image" label="微信二维码">
-            <gvb_upload_image
+            <gvb-upload-image
               v-model="siteForm.wechat_image"
               placeholder="微信二维码"
-            ></gvb_upload_image>
+            ></gvb-upload-image>
           </a-form-item>
         </a-form>
       </div>

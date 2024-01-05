@@ -36,7 +36,7 @@
       <div class="action_search">
         <a-input-search
           :placeholder="searchPlaceholder"
-          style="width: 150px"
+          style="width: 180px"
           allow-clear
           v-model="params.key"
           @search="search"
@@ -50,7 +50,7 @@
           :placeholder="item.label"
           v-for="item in filterGroup"
           :options="item.options"
-          style="width: 130px"
+          style="width: 150px"
           allow-clear
           @change="filterChange(item, $event)"
         ></a-select>
@@ -234,7 +234,7 @@ const filterGroup = ref<filterOptionType[]>([]);
 // 加载中
 const isLoading = ref(false);
 
-// 获取用户列表
+// 获取列表
 async function getList(p?: paramsType & any) {
   if (p) {
     Object.assign(params, p);
@@ -242,13 +242,24 @@ async function getList(p?: paramsType & any) {
   isLoading.value = true;
   let res = await props.url(params);
   isLoading.value = false;
+  if (res.code) {
+    Message.error(res.msg);
+    return;
+  }
   data.list = res.data.list;
   data.count = res.data.count;
 }
 getList(props.defaultParams);
 
+// 清除数据
+function clearData() {
+  data.list = [];
+  data.count = 0;
+}
+
 defineExpose({
   getList,
+  clearData,
 });
 
 // 初始化用户组
