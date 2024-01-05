@@ -69,3 +69,15 @@ export function userCreateApi(
 ): Promise<baseResponse<string>> {
   return useAxios.post("/api/users", data);
 }
+
+// 更新用户接口
+export interface userUpdateRequest {
+  nick_name: string;
+  role: number;
+  user_id: number;
+}
+export function userUpdateApi(
+  data: userUpdateRequest
+): Promise<baseResponse<string>> {
+  return useAxios.put("/api/user_role", data);
+}

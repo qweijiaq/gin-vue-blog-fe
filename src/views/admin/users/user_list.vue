@@ -1,6 +1,40 @@
 <template>
   <div>
     <gvb-user-create v-model:visible="visible" @ok="createOk" />
+    <a-modal
+      title="编辑用户"
+      v-model:visible="updateVisible"
+      :on-before-ok="updateUser"
+    >
+      <a-form ref="formRef" :model="updateUserForm">
+        <a-form-item
+          field="nick_name"
+          label="昵称"
+          :rules="[{ required: true, message: '昵称不能为空' }]"
+          :validate-trigger="['blur', 'input']"
+        >
+          <a-input
+            v-model="updateUserForm.nick_name"
+            placeholder="请输入昵称 ..."
+          >
+            <template #prefix>
+              <icon-robot />
+            </template>
+          </a-input>
+        </a-form-item>
+        <a-form-item field="role" label="权限">
+          <a-select
+            v-model="updateUserForm.role"
+            :options="roleOptions"
+            placeholder="请选择权限"
+          >
+            <template #prefix>
+              <icon-safe />
+            </template>
+          </a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
     <gvb-table
       ref="gvbTable"
       :url="userListApi"
@@ -20,13 +54,16 @@
 </template>
 
 <script setup lang="ts">
-import { userListApi, type userInfoType } from "@/api/user";
+import { userListApi, userUpdateApi, type userInfoType } from "@/api/user";
 import GvbTable from "@/components/admin/table.vue";
 import GvbUserCreate from "@/components/admin/user_create.vue";
 import type { filterOptionType } from "@/components/admin/table.vue";
 import { roleIdListApi } from "@/api/role";
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import type { RecordType } from "@/components/admin/table.vue";
+import type { userUpdateRequest } from "@/api/user";
+import { roleOptions } from "@/global";
+import { Message } from "@arco-design/web-vue";
 
 const columns = [
   { title: "昵称", dataIndex: "nick_name" },
@@ -53,13 +90,41 @@ const visible = ref(false);
 
 const gvbTable = ref();
 
+const updateVisible = ref(false);
+
+const formRef = ref();
+
+const updateUserForm = reactive<userUpdateRequest>({
+  nick_name: "",
+  role: 0,
+  user_id: 0,
+});
+
 // 编辑用户
-function edit(record: RecordType<userInfoType>) {
-  console.log("edit", record);
+function edit(record: RecordType<userInfoType>): void {
+  updateUserForm.user_id = record.id;
+  updateUserForm.role = record.role_id;
+  updateUserForm.nick_name = record.nick_name;
+  updateVisible.value = true;
 }
 
 function createOk() {
   gvbTable.value.getList();
+}
+
+// 更新用户
+async function updateUser() {
+  let val = await formRef.value.validate();
+  if (val) return;
+  let res = await userUpdateApi(updateUserForm);
+
+  if (res.code) {
+    Message.error(res.msg);
+    return;
+  }
+  Message.success(res.msg);
+  gvbTable.value.getList();
+  return;
 }
 </script>
 
