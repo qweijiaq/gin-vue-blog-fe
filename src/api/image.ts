@@ -37,9 +37,9 @@ export interface imagesUploadResponse {
 export function uploadImageApi(file: File): Promise<baseResponse<string>> {
   return new Promise((resolve, reject) => {
     const form = new FormData();
-    form.set("image", file);
+    form.set("images", file);
     useAxios
-      .post("/api/image", form, {
+      .post("/api/images", form, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

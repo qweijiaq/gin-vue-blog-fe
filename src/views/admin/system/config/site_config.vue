@@ -1,5 +1,5 @@
 <template>
-  <div>系统日志</div>
+  <div>站点配置</div>
 </template>
 
 <script setup lang="ts"></script>

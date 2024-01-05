@@ -1,5 +1,5 @@
 <template>
-  <div>系统日志</div>
+  <div>高德配置</div>
 </template>
 
 <script setup lang="ts"></script>

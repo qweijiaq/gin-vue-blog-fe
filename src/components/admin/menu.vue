@@ -98,6 +98,7 @@ const menuList: MenuType[] = [
       { title: "日志列表", name: "logList", children: [] },
       { title: "用户反馈", name: "feedbackList", children: [] },
       { title: "广告列表", name: "advertiseList", children: [] },
+      { title: "站点配置", name: "siteConfig", children: [] },
     ],
   },
 ];

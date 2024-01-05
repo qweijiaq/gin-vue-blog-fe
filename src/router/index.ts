@@ -225,6 +225,71 @@ const router = createRouter({
               component: () =>
                 import("@/views/admin/system/advertise_list.vue"),
             },
+            {
+              path: "config",
+              name: "config",
+              meta: {
+                title: "系统配置",
+              },
+              redirect: "/admin/system/system/site",
+              component: () => import("@/views/admin/system/config.vue"),
+              children: [
+                {
+                  path: "site",
+                  name: "siteConfig",
+                  meta: {
+                    title: "站点配置",
+                  },
+                  component: () =>
+                    import("@/views/admin/system/config/site_config.vue"),
+                },
+                {
+                  path: "email",
+                  name: "emailConfig",
+                  meta: {
+                    title: "邮箱设置",
+                  },
+                  component: () =>
+                    import("@/views/admin/system/config/email_config.vue"),
+                },
+                {
+                  path: "qiniu",
+                  name: "qiniuConfig",
+                  meta: {
+                    title: "七牛云设置",
+                  },
+                  component: () =>
+                    import("@/views/admin/system/config/qiniu_config.vue"),
+                },
+                {
+                  path: "qq",
+                  name: "qqConfig",
+                  meta: {
+                    title: "QQ设置",
+                  },
+                  component: () =>
+                    import("../views/admin/system/config/qq_config.vue"),
+                },
+                {
+                  path: "jwt",
+                  name: "jwtConfig",
+                  meta: {
+                    title: "jwt设置",
+                  },
+                  component: () =>
+                    import("@/views/admin/system/config/jwt_config.vue"),
+                },
+                {
+                  path: "gaode",
+                  name: "gaodeConfig",
+                  meta: {
+                    title: "高德设置",
+                  },
+                  component: () =>
+                    import("@/views/admin/system/config/gaode_config.vue"),
+                },
+              ],
+            },
           ],
         },
       ],
