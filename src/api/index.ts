@@ -64,3 +64,28 @@ export function defaultOptionApi(
 ): Promise<baseResponse<optionType[]>> {
   return useAxios.get(url, { params });
 }
+
+export function cacheRequest<T>(func: () => Promise<T>): () => Promise<T> {
+  let lastRequestTime: number = 0; // 存储上次请求的时间戳
+  let cacheData: T | null = null; // 上次缓存的数据
+  let currentRequest: Promise<T> | null = null;
+  return function () {
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastRequestTime;
+
+    if (timeDiff < 1000 && cacheData) {
+      return Promise.resolve(cacheData);
+    }
+    // 没有缓存数据，或者时间超过一秒，那就发起新的请求
+    if (!currentRequest) {
+      currentRequest = func().then((res: T) => {
+        // 更新之前的数据和时间
+        lastRequestTime = currentTime;
+        cacheData = res;
+        currentRequest = null; // 重置当前请求
+        return res;
+      });
+    }
+    return currentRequest;
+  };
+}

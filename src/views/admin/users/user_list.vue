@@ -54,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+import { IconRobot, IconSafe } from "@arco-design/web-vue/es/icon";
 import { userListApi, userUpdateApi, type userInfoType } from "@/api/user";
 import GvbTable from "@/components/admin/table.vue";
 import GvbUserCreate from "@/components/admin/user_create.vue";
