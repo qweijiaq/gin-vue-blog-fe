@@ -41,7 +41,7 @@
       :columns="columns"
       @add="visible = true"
       @edit="edit"
-      add-label="添加用户"
+      add-label="创建用户"
       search-placeholder="搜索昵称"
       default-delete
       :filter-group="filterGroup"

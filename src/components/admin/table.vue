@@ -36,7 +36,7 @@
       <div class="action_search">
         <a-input-search
           :placeholder="searchPlaceholder"
-          style="width: 130px"
+          style="width: 150px"
           allow-clear
           v-model="params.key"
           @search="search"
@@ -122,7 +122,7 @@
           </template>
         </a-table>
       </div>
-      <div class="table_page">
+      <div class="table_page" v-if="!props.noPage">
         <a-pagination
           :total="data.count"
           :default-page-size="params.limit"
@@ -163,6 +163,7 @@ interface Props {
   noAdd?: boolean; // 没有添加
   noEdit?: boolean; // 没有编辑
   noDelete?: boolean; // 没有单独的删除
+  noPage?: boolean; // 是否显示分页
   searchPlaceholder?: string; // 模糊匹配的提示词
   defaultParams?: paramsType & any; //第一次查询的查询参数
 }
