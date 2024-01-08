@@ -229,7 +229,7 @@ const router = createRouter({
               path: "config",
               name: "config",
               meta: {
-                title: "系统配置",
+                title: "站点配置",
               },
               redirect: "/admin/system/system/site",
               component: () => import("@/views/admin/system/config.vue"),
@@ -238,7 +238,7 @@ const router = createRouter({
                   path: "site",
                   name: "siteConfig",
                   meta: {
-                    title: "站点配置",
+                    title: "网站设置",
                   },
                   component: () =>
                     import("@/views/admin/system/config/site_config.vue"),

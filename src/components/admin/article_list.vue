@@ -161,7 +161,7 @@ function editArticleContent(record: articleType) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @mixin marginRight($width) {
   margin-right: $width;
   &:last-child {
