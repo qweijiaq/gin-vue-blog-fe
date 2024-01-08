@@ -81,3 +81,40 @@ export function userUpdateApi(
 ): Promise<baseResponse<string>> {
   return useAxios.put("/api/user_role", data);
 }
+
+// 更新用户信息接口
+export function userInfoUpdateApi(
+  data: userInfoUpdateType
+): Promise<baseResponse<string>> {
+  return useAxios.put("/api/user_info", data);
+}
+export interface userInfoUpdateType {
+  link: string;
+  nick_name: string;
+  sign: string;
+  avatar: string;
+}
+
+// 更新用户密码接口
+export function userUpdatePasswordApi(
+  data: userUpdatePasswordType
+): Promise<baseResponse<string>> {
+  return useAxios.put("/api/user_password", data);
+}
+export interface userUpdatePasswordType {
+  old_pwd: string;
+  pwd: string;
+  re_pwd: string;
+}
+
+// 用户绑定邮箱接口
+export function userBindEmailApi(
+  data: userBindEmailType
+): Promise<baseResponse<string>> {
+  return useAxios.post("/api/user_bind_email", data);
+}
+export interface userBindEmailType {
+  code?: string;
+  email: string;
+  password?: string;
+}

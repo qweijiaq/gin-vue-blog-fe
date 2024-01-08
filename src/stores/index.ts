@@ -113,6 +113,11 @@ export const useStore = defineStore("store", {
       await logoutApi();
       this.clearUserInfo();
     },
+
+    setUserInfo(key: "nick_name" | "avatar", val: string) {
+      this.userInfo[key] = val;
+      localStorage.setItem("userInfo", JSON.stringify(this.userInfo));
+    },
   },
   getters: {
     themeString(): string {
