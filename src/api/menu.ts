@@ -1,5 +1,5 @@
-import type { baseResponse, listDataType, paramsType } from ".";
-import { useAxios } from ".";
+import { useAxios } from "@/api/index";
+import type { paramsType, baseResponse, listDataType } from "@/api/index";
 
 export interface bannerType {
   id: number;
@@ -19,6 +19,12 @@ export interface menuType {
   title: string;
 }
 
+export function menuListApi(
+  params: paramsType
+): Promise<baseResponse<listDataType<menuType>>> {
+  return useAxios.get("/api/menus", { params: params });
+}
+
 export interface imageIdSortList {
   image_id: number;
   sort: number;
@@ -35,6 +41,19 @@ export interface menuCreateRequest {
   title: string;
 }
 
+export function menuCreateApi(
+  data: menuCreateRequest
+): Promise<baseResponse<string>> {
+  return useAxios.post("/api/menus", data);
+}
+
+export function menuUpdateApi(
+  id: number,
+  data: menuCreateRequest
+): Promise<baseResponse<string>> {
+  return useAxios.put("/api/menus/" + id.toString(), data);
+}
+
 export const defaultMenuForm = {
   abstract: [],
   abstract_time: 7,
@@ -48,21 +67,16 @@ export const defaultMenuForm = {
   imageIdList: [],
 };
 
-export function menuListApi(
-  params: paramsType
-): Promise<baseResponse<listDataType<menuType>>> {
-  return useAxios.get("/api/menus", { params: params });
+export interface menuNameType {
+  id: number;
+  title: string;
+  path: string;
 }
 
-export function menuCreateApi(
-  data: menuCreateRequest
-): Promise<baseResponse<string>> {
-  return useAxios.post("/api/menus", data);
+export function menuNameListApi(): Promise<baseResponse<menuNameType[]>> {
+  return useAxios.get("/api/menu_names");
 }
 
-export function menuUpdateApi(
-  id: number,
-  data: menuCreateRequest
-): Promise<baseResponse<string>> {
-  return useAxios.put("/api/menus/" + id.toString(), data);
+export function menuDetailApi(path: string): Promise<baseResponse<menuType>> {
+  return useAxios.get("/api/menus/detail", { params: { path } });
 }

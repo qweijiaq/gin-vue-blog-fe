@@ -60,7 +60,7 @@ const recordData = reactive<
 const columns = [
   { title: "序号", dataIndex: "sort" },
   { title: "菜单标题", dataIndex: "title" },
-  { title: "路径", slotName: "path" },
+  { title: "路径", dataIndex: "path" },
   { title: "slogan", dataIndex: "slogan" },
   { title: "简介", dataIndex: "abstract" },
   { title: "slogan切换时间", dataIndex: "banner_time" },

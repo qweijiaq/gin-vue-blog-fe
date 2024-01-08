@@ -2,6 +2,7 @@ import { logoutApi, userInfoApi } from "@/api/user";
 import { parseToken } from "@/utils/jwt";
 import { Message } from "@arco-design/web-vue";
 import { defineStore } from "pinia";
+import { siteInfoApi, type siteInfoType } from "@/api/settings";
 
 const theme: boolean = true; // true - light   false - dark
 const isCollapsed: boolean = false;
@@ -26,12 +27,32 @@ const userInfo: userStoreInfoType = {
   exp: 0,
 };
 
+const siteInfo: siteInfoType = {
+  addr: "",
+  bei_an: "",
+  csdn_url: "",
+  created_at: "",
+  email: "",
+  gitee_url: "",
+  github_url: "",
+  job: "",
+  name: "",
+  qq_image: "",
+  slogan: "",
+  slogan_en: "",
+  title: "",
+  version: "",
+  web: "",
+  wechat_image: "",
+};
+
 export const useStore = defineStore("store", {
   state() {
     return {
       theme, // 主题
       isCollapsed, // 后台侧边栏的搜索状态，默认展开
       userInfo, // 用户信息
+      siteInfo,
     };
   },
   actions: {
@@ -117,6 +138,20 @@ export const useStore = defineStore("store", {
     setUserInfo(key: "nick_name" | "avatar", val: string) {
       this.userInfo[key] = val;
       localStorage.setItem("userInfo", JSON.stringify(this.userInfo));
+    },
+
+    async loadSiteInfo() {
+      const val = sessionStorage.getItem("siteInfo");
+      if (val !== null) {
+        try {
+          this.siteInfo = JSON.parse(val);
+          return;
+        } catch (e) {}
+      }
+      let res = await siteInfoApi();
+      this.siteInfo = res.data;
+
+      sessionStorage.setItem("siteInfo", JSON.stringify(this.siteInfo));
     },
   },
   getters: {

@@ -37,19 +37,19 @@
             placeholder="昵称"
           ></a-input>
         </a-form-item>
-        <a-form-item label="我的签名">
+        <a-form-item label="个性签名">
           <a-textarea
             @change="userInfoUpdate"
             v-model="form.sign"
-            placeholder="我的签名"
+            placeholder="个性签名"
             :auto-size="{ minRows: 3, maxRows: 3 }"
           ></a-textarea>
         </a-form-item>
-        <a-form-item label="我的博客">
+        <a-form-item label="Github地址">
           <a-input
             @change="userInfoUpdate"
             v-model="form.link"
-            placeholder="我的博客"
+            placeholder="Github地址"
           ></a-input>
         </a-form-item>
         <a-form-item label="邮箱">

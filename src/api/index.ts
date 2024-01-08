@@ -32,6 +32,7 @@ useAxios.interceptors.request.use((config) => {
 useAxios.interceptors.response.use(
   (response) => {
     if (response.status !== 200) {
+      // 失败的
       console.log("服务失败", response.status);
       Message.error(response.statusText);
       return Promise.reject(response.statusText);
