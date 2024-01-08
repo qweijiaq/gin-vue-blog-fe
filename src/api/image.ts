@@ -37,9 +37,9 @@ export interface imagesUploadResponse {
 export function uploadImageApi(file: File): Promise<baseResponse<string>> {
   return new Promise((resolve, reject) => {
     const form = new FormData();
-    form.set("images", file);
+    form.set("image", file);
     useAxios
-      .post("/api/images", form, {
+      .post("/api/image", form, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -58,7 +58,6 @@ export async function onUploadImg(
   try {
     resList = await Promise.all(files.map((file) => uploadImageApi(file)));
   } catch (e) {
-    // Message.error(e.message)
     return;
   }
 

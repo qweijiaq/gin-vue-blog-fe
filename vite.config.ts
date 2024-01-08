@@ -6,7 +6,8 @@ import type { ImportMetaEnv } from "./env";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   let env: Record<keyof ImportMetaEnv, string> = loadEnv(mode, process.cwd());
-  console.log(env.VITE_SERVER_URL, process.cwd());
+  const serverUrl = env.VITE_SERVER_URL;
+  const wsUrl = serverUrl.replace("http", "ws");
   return {
     plugins: [vue()],
     envDir: "./",
@@ -26,6 +27,12 @@ export default defineConfig(({ mode }) => {
         "/uploads": {
           target: env.VITE_SERVER_URL,
           changeOrigin: true,
+        },
+        "/ws": {
+          target: wsUrl,
+          changeOrigin: true,
+          ws: true,
+          rewrite: (path) => path.replace(/^\/ws/, ""),
         },
       },
     },
