@@ -1,7 +1,9 @@
 <template>
-  <div>文章列表</div>
+  <div class="article_list_view">
+    <gvb-article-list></gvb-article-list>
+  </div>
 </template>
 
-<script setup lang="ts"></script>
-
-<style lang="scss"></style>
+<script setup lang="ts">
+import GvbArticleList from "@/components/admin/article_list.vue";
+</script>
