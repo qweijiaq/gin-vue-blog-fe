@@ -165,7 +165,7 @@ async function getData() {
     // 文章不存在
     Message.warning("文章不存在");
     router.push({
-      name: "article_notfound",
+      name: "detail_notfound",
     });
     return;
   }
