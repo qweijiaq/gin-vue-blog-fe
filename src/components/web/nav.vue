@@ -2,7 +2,7 @@
   <div :class="{ nav: true, isShow: isShow }">
     <div class="nav_container">
       <div class="left">
-        <a class="logo" href="/">
+        <a class="nav_logo" href="/">
           <div class="slogan">{{ store.siteInfo.slogan }}</div>
           <div class="en_slogan">{{ store.siteInfo.slogan_en }}</div>
         </a>
@@ -21,14 +21,14 @@
         <gvb-search></gvb-search>
       </div>
       <div class="right">
+        <div class="theme">
+          <gvb-theme />
+        </div>
         <div class="login" v-if="!store.isLogin">
           <router-link :to="{ name: 'login' }">登录</router-link>
         </div>
         <div class="user_info" v-else>
           <gvb-user-info-menu></gvb-user-info-menu>
-        </div>
-        <div class="theme">
-          <gvb-theme />
         </div>
       </div>
     </div>
@@ -136,7 +136,7 @@ getData();
       display: flex;
       align-items: center;
 
-      .logo {
+      .nav_logo {
         margin-right: 40px;
 
         .slogan {

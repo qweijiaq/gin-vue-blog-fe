@@ -66,21 +66,24 @@ async function getData() {
   const val = sessionStorage.getItem(key);
   if (val?.length !== 2) {
     try {
-      const jsonData = JSON.parse(val) as BannerType;
+      const jsonData = JSON.parse(val as string) as BannerType;
       data.banners = jsonData.banners;
       data.abstract = jsonData.abstract;
       data.banner_time = jsonData.banner_time;
       data.slogan = jsonData.slogan;
       return;
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   let res = await menuDetailApi(location.pathname);
-  console.log(res);
+  console.log("res", res);
   data.banners = res.data.banners;
   data.abstract = res.data.abstract;
   data.banner_time = res.data.banner_time;
   data.slogan = res.data.slogan;
+  console.log("data", data);
   sessionStorage.setItem(key, JSON.stringify(data));
 }
 
@@ -88,6 +91,7 @@ watch(
   () => data,
   () => {
     getData();
+    console.log("data", data);
   },
   { immediate: true }
 );
@@ -117,7 +121,9 @@ watch(
 
     .abstract {
       font-size: 18px;
-      text-align: center;
+      // text-align: center;
+      display: flex;
+      justify-content: center;
       line-height: 1.5rem;
     }
   }

@@ -1,6 +1,7 @@
 import { useStore } from "@/stores";
 import { Message } from "@arco-design/web-vue";
 import { createRouter, createWebHistory } from "vue-router";
+import NProgress from "nprogress";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,12 +27,12 @@ const router = createRouter({
           component: () => import("@/views/web/search.vue"),
         },
         {
-          path: "chat",
-          name: "chat",
+          path: "chatbox",
+          name: "chatbox",
           component: () => import("@/views/web/chat.vue"),
         },
         {
-          path: "article/404",
+          path: "article/nofound",
           name: "article_notfound",
           component: () => import("@/views/web/article_notfound.vue"),
         },
@@ -338,7 +339,12 @@ router.beforeEach((to, from, next) => {
     return;
   }
 
+  NProgress.start();
   next();
+});
+
+router.afterEach(() => {
+  NProgress.done(); // 完成进度条
 });
 
 export default router;

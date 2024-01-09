@@ -17,6 +17,7 @@
     "font-awesome": "^4.7.0",
     "md-editor-v3": "^4.10.0",
     "mockjs": "^1.1.0",
+    "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "swiper": "^11.0.5",
     "vue": "^3.3.11",

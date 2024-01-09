@@ -3,6 +3,7 @@ import "@/assets/theme.css";
 import "@/assets/font.css";
 import "@arco-design/web-vue/dist/arco.css";
 import "font-awesome/css/font-awesome.min.css";
+import "nprogress/nprogress.css";
 
 import { createApp } from "vue";
 import ArcoVue from "@arco-design/web-vue";

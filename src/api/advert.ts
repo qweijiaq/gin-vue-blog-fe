@@ -16,7 +16,7 @@ export function advertListApi(
   return useAxios.get("/api/adverts", {
     params: params,
     headers: {
-      Gvb_referer: location.pathname,
+      GvbReferer: location.pathname,
     },
   });
 }

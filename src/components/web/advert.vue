@@ -1,7 +1,7 @@
 <template>
   <div class="advert">
     <a-carousel auto-play indicator-type="dot" show-arrow="hover">
-      <a-carousel-item v-for="item in promotionList">
+      <a-carousel-item v-for="item in advertList">
         <a :href="item.href" target="_blank" class="link">
           <img :src="item.images" :alt="item.title" />
         </a>
@@ -15,13 +15,13 @@ import { advertListApi } from "@/api/advert";
 import type { advertType } from "@/api/advert";
 import { ref } from "vue";
 
-const promotionList = ref<advertType[]>([]);
+const advertList = ref<advertType[]>([]);
 
 async function getData() {
   let res = await advertListApi();
-  promotionList.value = res.data.list;
+  console.log(res);
+  advertList.value = res.data.list;
 }
-
 getData();
 </script>
 
