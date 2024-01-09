@@ -29,7 +29,7 @@
       <template #title="{ record }: { record: articleType }">
         <div class="article_title_col">
           <div v-html="record.title"></div>
-          <a :href="`/article/${record.id}`" target="_blank">访问</a>
+          <a :href="`/detail/${record.id}`" target="_blank">访问</a>
         </div>
       </template>
       <template #banner_url="{ record }: { record: articleType }">

@@ -62,7 +62,7 @@ async function search() {
 }
 
 function goTo(item: articleSearchType) {
-  window.open(`/article/${item.slug}`, "_blank");
+  window.open(`/detail/${item.slug}`, "_blank");
 }
 </script>
 <style lang="scss">

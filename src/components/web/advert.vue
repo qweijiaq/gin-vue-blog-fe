@@ -19,7 +19,6 @@ const advertList = ref<advertType[]>([]);
 
 async function getData() {
   let res = await advertListApi();
-  console.log(res);
   advertList.value = res.data.list;
 }
 getData();

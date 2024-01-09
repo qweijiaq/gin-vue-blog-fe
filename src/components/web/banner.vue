@@ -72,26 +72,21 @@ async function getData() {
       data.banner_time = jsonData.banner_time;
       data.slogan = jsonData.slogan;
       return;
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   }
 
   let res = await menuDetailApi(location.pathname);
-  console.log("res", res);
   data.banners = res.data.banners;
   data.abstract = res.data.abstract;
   data.banner_time = res.data.banner_time;
   data.slogan = res.data.slogan;
-  console.log("data", data);
   sessionStorage.setItem(key, JSON.stringify(data));
 }
 
 watch(
-  () => data,
+  () => props.data,
   () => {
     getData();
-    console.log("data", data);
   },
   { immediate: true }
 );

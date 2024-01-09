@@ -7,7 +7,7 @@
         </div>
         <div class="info">
           <div class="title">
-            <a :href="`/article/${item.id}`">{{ item.title }}</a>
+            <a :href="`/detail/${item.id}`">{{ item.title }}</a>
           </div>
           <div class="abstract">
             <a-typography-paragraph :ellipsis="{ rows: 2 }">{{

@@ -11,7 +11,7 @@
         <!--        <router-link v-else :to="{name: 'article', params: {id: props.data.id}}" v-html="props.data.title"></router-link>-->
         <a
           v-else
-          :href="`/article/${props.data.id}`"
+          :href="`/detail/${props.data.id}`"
           v-html="props.data.title"
         ></a>
       </div>
