@@ -7,7 +7,6 @@ import * as echarts from "echarts";
 import { onMounted, ref } from "vue";
 import type { EChartsOption } from "echarts";
 import router from "@/router";
-import { type paramsType } from ".";
 
 interface Props {
   dateList: string[];

@@ -39,6 +39,12 @@
           style="border-radius: 5px"
         ></a-image>
       </template>
+      <template #is_recommend="{ record }: { record: articleType }">
+        <a-switch
+          style="cursor: auto"
+          :model-value="record.is_recommend"
+        ></a-switch>
+      </template>
       <template #article_data="{ record }: { record: articleType }">
         <div class="article_data_col">
           <span>
@@ -122,6 +128,7 @@ const columns = [
   { title: "分类", dataIndex: "category" },
   { title: "封面", slotName: "banner_url" },
   { title: "作者", dataIndex: "user_nick_name" },
+  { title: "推荐", slotName: "is_recommend" },
   { title: "标签", slotName: "article_tags" },
   { title: "文章数据", slotName: "article_data" },
   { title: "发布时间", slotName: "created_at" },

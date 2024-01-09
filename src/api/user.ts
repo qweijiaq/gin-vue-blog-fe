@@ -3,7 +3,7 @@ import {
   type baseResponse,
   type paramsType,
   type listDataType,
-} from ".";
+} from "@/api";
 
 export interface loginEmailType {
   user_name: string;

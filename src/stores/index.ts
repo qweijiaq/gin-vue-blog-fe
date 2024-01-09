@@ -155,7 +155,7 @@ export const useStore = defineStore("store", {
     },
   },
   getters: {
-    themeString(): string {
+    themeString(): "light" | "dark" {
       return this.theme ? "light" : "dark";
     },
     // 是否登录

@@ -36,5 +36,8 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    optimizeDeps: {
+      exclude: ["node_modules"],
+    },
   };
 });

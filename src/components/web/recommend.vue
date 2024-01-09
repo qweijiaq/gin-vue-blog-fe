@@ -1,6 +1,6 @@
 <template>
   <gvb-card title="文章推荐">
-    <div class="gvb_recommend">
+    <div class="recommend">
       <div class="item" v-for="item in data.list">
         <div class="cover">
           <img :src="item.banner_url" alt="" />
@@ -65,6 +65,7 @@ const params = reactive<articleParamsType>({
 
 async function getData() {
   let res = await articleRecommendListApi(params);
+  console.log(res);
   data.list = res.data.list;
   data.count = res.data.count;
 }
@@ -81,7 +82,7 @@ function checkCategory(item: optionType) {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .head_right {
   a {
     margin-left: 10px;
@@ -91,7 +92,7 @@ function checkCategory(item: optionType) {
   }
 }
 
-.gvb_recommend {
+.recommend {
   .item {
     margin-bottom: 20px;
     position: relative;

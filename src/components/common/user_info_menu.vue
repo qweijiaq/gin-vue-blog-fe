@@ -3,7 +3,7 @@
     <a-dropdown @select="select" class="drop">
       <div class="dropdown">
         <img :src="store.userInfo.avatar" alt="" />
-        <span>{{ store.userInfo.nickname }}</span>
+        <span>{{ store.userInfo.nick_name }}</span>
         <icon-down />
       </div>
       <template #content>
