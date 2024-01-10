@@ -18,7 +18,7 @@
     >
       <div class="cropper">
         <div class="cropper_left">
-          <vueCropper
+          <vue-cropper
             :tyle="{ width: '400px' }"
             ref="cropperRef"
             :img="options.img"
@@ -74,6 +74,7 @@
 </template>
 <script lang="ts" setup>
 import "vue-cropper/dist/index.css";
+// @ts-ignore
 import { VueCropper } from "vue-cropper";
 import { ref, watch, reactive } from "vue";
 import { Message } from "@arco-design/web-vue";

@@ -21,7 +21,7 @@
     "pinia": "^2.1.7",
     "swiper": "^11.0.5",
     "vue": "^3.3.11",
-    "vue-cropper": "1.1",
+    "vue-cropper": "^1.1.1",
     "vue-json-pretty": "^2.3.0",
     "vue-router": "^4.2.5",
     "vue3typed": "^0.1.5"

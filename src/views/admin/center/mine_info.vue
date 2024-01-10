@@ -172,7 +172,7 @@ const form = reactive<userInfoType>({
 });
 
 function onConfirm(val: any) {
-  form.avatar = val[0].file_name;
+  form.avatar = val;
   userInfoUpdate();
 }
 
