@@ -65,7 +65,6 @@ const params = reactive<articleParamsType>({
 
 async function getData() {
   let res = await articleRecommendListApi(params);
-  console.log(res);
   data.list = res.data.list;
   data.count = res.data.count;
 }

@@ -11,6 +11,11 @@ export interface baseResponse<T> {
   msg: string;
 }
 
+export interface optionsResponse<T> {
+  label: string;
+  value: T;
+}
+
 export interface paramsType {
   page?: number;
   limit?: number;

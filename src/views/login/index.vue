@@ -8,12 +8,12 @@
 
 <script setup lang="ts">
 import GvbLoginForm from "@/components/common/login_form.vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { qqLoginApi } from "@/api/user";
 import { Message } from "@arco-design/web-vue";
 import { useStore } from "@/stores";
+import router from "@/router";
 
-const router = useRouter();
 const store = useStore();
 const route = useRoute();
 

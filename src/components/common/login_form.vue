@@ -98,6 +98,7 @@ async function loginEmail() {
 
 async function qqLogin() {
   let res = await loginQQPathApi();
+  localStorage.setItem("qqres", JSON.stringify(res));
   if (res.code) {
     Message.error(res.msg);
     return;

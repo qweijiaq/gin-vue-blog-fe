@@ -156,8 +156,6 @@ const data = reactive<articleType>({
 });
 const isCatalogShow = ref(false);
 
-console.log(data);
-
 async function getData() {
   isCatalogShow.value = false;
   let res = await articleDetailApi(id.value);

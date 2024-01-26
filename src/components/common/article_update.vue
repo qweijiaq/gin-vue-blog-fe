@@ -224,9 +224,7 @@ async function okHandler() {
   let v = await formRef.value.validate();
   if (v) return;
   if (type === "update") {
-    console.log("form", form);
     let res = await articleUpdateApi(form);
-    console.log("res", res);
     if (res.code) {
       Message.error(res.msg);
       return;

@@ -32,6 +32,7 @@ import {
   IconUserGroup,
   IconMessage,
   IconSettings,
+  IconStar,
 } from "@arco-design/web-vue/es/icon";
 import { watch, type Component } from "vue";
 import router from "@/router";
@@ -88,6 +89,16 @@ const menuList: MenuType[] = [
     icon: IconMessage,
     name: "chat",
     children: [{ title: "群聊记录", name: "chatList", children: [] }],
+  },
+  {
+    title: "大模型管理",
+    icon: IconStar,
+    name: "big_model",
+    children: [
+      { title: "参数配置", name: "options", children: [] },
+      { title: "角色配置", name: "roles", children: [] },
+      { title: "会话管理", name: "sessions", children: [] },
+    ],
   },
   {
     title: "系统管理",

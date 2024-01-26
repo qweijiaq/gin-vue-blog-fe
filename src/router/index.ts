@@ -185,6 +185,100 @@ const router = createRouter({
           ],
         },
         {
+          path: "bigModel",
+          name: "big_model",
+          meta: {
+            title: "大模型管理",
+            isAdmin: true,
+            isTourist: false,
+          },
+          component: () => import("@/views/admin/big_model/index.vue"),
+          children: [
+            {
+              path: "options",
+              name: "options",
+              meta: {
+                title: "参数配置",
+              },
+              component: () =>
+                import("@/views/admin/big_model/options/index.vue"),
+              redirect: "/admin/bigModel/options/base",
+              children: [
+                {
+                  path: "base",
+                  name: "base_option",
+                  meta: {
+                    title: "基本配置",
+                  },
+                  component: () =>
+                    import("@/views/admin/big_model/options/base_option.vue"),
+                },
+                {
+                  path: "session",
+                  name: "session_option",
+                  meta: {
+                    title: "会话配置",
+                  },
+                  component: () =>
+                    import(
+                      "@/views/admin/big_model/options/session_option.vue"
+                    ),
+                },
+                {
+                  path: "auto_reply",
+                  name: "auto_reply_option",
+                  meta: {
+                    title: "自动回复配置",
+                  },
+                  component: () =>
+                    import(
+                      "@/views/admin/big_model/options/auto_reply_option.vue"
+                    ),
+                },
+              ],
+            },
+            {
+              path: "roles",
+              name: "roles",
+              meta: {
+                title: "角色配置",
+              },
+              component: () =>
+                import("@/views/admin/big_model/roles/index.vue"),
+              redirect: "/admin/bigModel/roles/role_list",
+              children: [
+                {
+                  path: "role_list",
+                  name: "role_list",
+                  meta: {
+                    title: "角色列表",
+                  },
+                  component: () =>
+                    import("@/views/admin/big_model/roles/role_list.vue"),
+                },
+                {
+                  path: "role_tag",
+                  name: "role_tag",
+                  meta: {
+                    title: "角色标签",
+                  },
+                  component: () =>
+                    import("@/views/admin/big_model/roles/role_tag.vue"),
+                },
+              ],
+            },
+            {
+              path: "sessions",
+              name: "sessions",
+              meta: {
+                title: "会话配置",
+              },
+              component: () =>
+                import("@/views/admin/big_model/session/index.vue"),
+            },
+          ],
+        },
+        {
           path: "system",
           name: "system",
           meta: {
@@ -296,7 +390,7 @@ const router = createRouter({
       ],
     },
     {
-      path: "/login",
+      path: "/oauth",
       name: "login",
       meta: {
         title: "登录",
