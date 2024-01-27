@@ -208,9 +208,9 @@ export function bigModelChatListApi(
 export function bigModelChatDelete(
   idList: number[]
 ): Promise<baseResponse<string>> {
-  return useAxios.delete("/api/BigModel/chats", {
+  return useAxios.delete("/api/bigModel/chats", {
     data: {
-      idList: idList,
+      id_list: idList,
     },
   });
 }
