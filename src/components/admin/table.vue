@@ -91,7 +91,7 @@
                       type="primary"
                       v-if="!props.noEdit"
                       @click="edit(record)"
-                      >编辑</a-button
+                      >{{ editLabel }}</a-button
                     >
                     <slot name="action_middle" :record="record"></slot>
                     <a-popconfirm
@@ -166,6 +166,7 @@ interface Props {
   noPage?: boolean; // 是否显示分页
   searchPlaceholder?: string; // 模糊匹配的提示词
   defaultParams?: paramsType & any; //第一次查询的查询参数
+  editLabel?: string; // 编辑的默认名
 }
 
 // 操作分组的类型
@@ -201,6 +202,7 @@ const {
   rowKey = "id",
   addLabel = "添加",
   searchPlaceholder = "搜索",
+  editLabel = "编辑",
 } = props;
 
 const data = reactive<listDataType<any>>({

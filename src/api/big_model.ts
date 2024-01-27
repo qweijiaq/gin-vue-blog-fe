@@ -165,3 +165,52 @@ export function bigModelRoleIconOptionsApi(): Promise<
 > {
   return useAxios.get("/api/bigModel/icons");
 }
+
+// 会话类型
+export interface bigModelSessionType {
+  id: number;
+  created_at: string;
+  userID: number;
+  nickName: string;
+  sessionName: string; // 会话名称
+  roleName: string; // 角色名称
+  chatCount: number; // 对话个数
+  lastContent: string; // 最后一次对话内容
+}
+
+// 会话列表
+export function bigModelSessionListApi(
+  params?: paramsType
+): Promise<baseResponse<listDataType<bigModelSessionType>>> {
+  return useAxios.get("/api/bigModel/sessions", { params });
+}
+
+export interface bigModelChatListRequest extends paramsType {
+  sessionId: number;
+}
+
+export interface bigModelChatListType {
+  id: number;
+  created_at: string;
+  userContent: string;
+  userAvatar: string;
+  botContent: string;
+  botAvatar: string;
+  status: boolean;
+}
+
+export function bigModelChatListApi(
+  params: bigModelChatListRequest
+): Promise<baseResponse<listDataType<bigModelChatListType>>> {
+  return useAxios.get("/api/bigModel/chats", { params });
+}
+
+export function bigModelChatDelete(
+  idList: number[]
+): Promise<baseResponse<string>> {
+  return useAxios.delete("/api/BigModel/chats", {
+    data: {
+      idList: idList,
+    },
+  });
+}
