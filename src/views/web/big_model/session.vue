@@ -21,19 +21,49 @@
         </a-form-item>
       </a-form>
     </a-modal>
-    <div class="left">xxx</div>
+    <div class="left">
+      <div class="head">角色名称</div>
+      <div class="chat_list">
+        <div :class="{ item: true }" v-for="item in chatData.list">
+          <div class="user_item">
+            <a-checkbox v-if="isManage" :value="item.id"></a-checkbox>
+            <div class="avatar">
+              <img :src="item.userAvatar" alt="" />
+            </div>
+            <div class="container">
+              <div class="date">{{ dateTimeFormat(item.created_at) }}</div>
+              <div class="content">{{ item.userContent }}</div>
+            </div>
+          </div>
+          <div class="bot_item">
+            <div class="avatar">
+              <img :src="item.botAvatar" alt="" />
+            </div>
+            <div class="container">
+              <div class="date">{{ dateTimeFormat(item.created_at) }}</div>
+              <div class="content">
+                <MdPreview
+                  :model-value="item.botContent"
+                  :theme="store.themeString"
+                ></MdPreview>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="right">
       <div class="role_info">
         <div>
-          <img src="" alt="" />
+          <img :src="detail.icon" alt="" />
           <div class="info">
-            <div class="name"></div>
-            <div class="count"></div>
+            <div class="name">{{ detail.name }}</div>
+            <div class="count">共{{ detail.chatCount }}条对话</div>
           </div>
         </div>
-        <a-typography-text class="abs" :ellipsis="{ rows: 2 }"
-          >xxxxxxxxxxx</a-typography-text
-        >
+        <a-typography-text class="abs" :ellipsis="{ rows: 2 }">{{
+          detail.abstract
+        }}</a-typography-text>
       </div>
       <div class="session_list">
         <div
@@ -68,16 +98,25 @@ import {
   roleSessionListApi,
   sessionNameUpdateApi,
   sessionRemoveApi,
+  roleDetailApi,
+  bigModelChatListApi,
 } from "@/api/big_model";
 import type {
   roleSessionType,
   sessionNameUpdateRequest,
+  roleDetailType,
+  bigModelChatListType,
 } from "@/api/big_model";
 import type { listDataType } from "@/api";
 import { Message } from "@arco-design/web-vue";
 import router from "@/router";
+import { useStore } from "@/stores";
+import { dateTimeFormat } from "@/utils/timeFormat";
+import { MdPreview } from "md-editor-v3";
+import "md-editor-v3/lib/preview.css";
 
 const route = useRoute();
+const store = useStore();
 
 const formRef = ref();
 
@@ -148,9 +187,45 @@ watch(
   () => route.query.roleID,
   () => {
     getSessionList();
+    getRoleDetail();
   },
   { immediate: true }
 );
+
+const detail = reactive<roleDetailType>({
+  id: 0,
+  created_at: "",
+  icon: "",
+  name: "",
+  abstract: "",
+  tags: [],
+  chatCount: 0,
+});
+async function getRoleDetail() {
+  let res = await roleDetailApi(Number(route.query.roleID));
+  Object.assign(detail, res.data);
+}
+getRoleDetail();
+
+const chatData = reactive<listDataType<bigModelChatListType>>({
+  count: 0,
+  list: [],
+});
+const allIDList = ref<number[]>([]);
+async function getData() {
+  let res = await bigModelChatListApi({
+    sessionId: Number(route.query.sessionID),
+  });
+  chatData.count = res.data.count;
+  chatData.list = res.data.list;
+  allIDList.value = [];
+  for (const item of res.data.list) {
+    allIDList.value.push(item.id);
+  }
+}
+getData();
+
+const isManage = ref<boolean>(false);
 </script>
 
 <style lang="scss" scoped>
@@ -163,6 +238,89 @@ watch(
     height: calc(100vh - 100px);
     background-color: var(--color-bg-1);
     border-radius: 5px;
+
+    .head {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--bg);
+      color: var(--color-text-2);
+      font-size: 16px;
+    }
+
+    .chat_list {
+      padding: 20px;
+      height: calc(100vh - 240px);
+      overflow-y: auto;
+      .item {
+        .bot_item {
+          display: flex;
+          margin-bottom: 20px;
+
+          .container {
+            margin-left: 10px;
+
+            .md-editor {
+              background-color: transparent;
+            }
+          }
+        }
+
+        .user_item {
+          display: flex;
+          flex-direction: row-reverse;
+          margin-bottom: 10px;
+
+          .container {
+            margin-right: 10px;
+            width: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+
+            .content {
+              padding: 10px;
+            }
+
+            .date {
+              text-align: right;
+            }
+          }
+        }
+
+        .container {
+          width: calc(100% - 120px);
+
+          .date {
+            font-size: 12px;
+          }
+
+          .content {
+            background-color: var(--bg);
+            border-radius: 5px;
+            margin-top: 5px;
+            width: fit-content;
+          }
+        }
+
+        .avatar {
+          width: 50px;
+          height: 50px;
+
+          img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+          }
+        }
+
+        &.isCheck {
+          background-color: var(--color-fill-3);
+          border-radius: 5px;
+          padding: 10px;
+          margin-bottom: 20px;
+        }
+      }
+    }
   }
 
   .right {
@@ -224,7 +382,7 @@ watch(
         position: relative;
         cursor: pointer;
 
-        &:active {
+        &.active {
           background-color: var(--color-fill-4);
         }
 

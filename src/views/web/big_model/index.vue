@@ -99,8 +99,8 @@ getData();
         cursor: pointer;
         padding: 20px;
 
-        &:active {
-          background-color: var(--color-fill-2);
+        &.active {
+          background-color: var(--color-fill-4);
         }
 
         &:hover {

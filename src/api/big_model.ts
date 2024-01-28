@@ -5,6 +5,7 @@ import type {
   optionsResponse,
   paramsType,
 } from "@/api";
+import type { tagType } from "./tag";
 
 // 大模型配置
 export interface bigModelSettingsType {
@@ -276,4 +277,20 @@ export function sessionNameUpdateApi(
 
 export function sessionRemoveApi(id: number): Promise<baseResponse<string>> {
   return useAxios.delete("/api/bigModel/sessions/" + id.toString());
+}
+
+export interface roleDetailType {
+  id: number;
+  created_at: string;
+  icon: string;
+  name: string;
+  abstract: string;
+  tags: tagType[];
+  chatCount: number;
+}
+
+export function roleDetailApi(
+  id: number
+): Promise<baseResponse<roleDetailType>> {
+  return useAxios.get("/api/bigModel/roles/" + id.toString());
 }
