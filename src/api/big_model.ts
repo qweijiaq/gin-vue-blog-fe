@@ -1,4 +1,4 @@
-import { useAxios } from "@/api";
+import { cacheRequest, useAxios } from "@/api";
 import type {
   baseResponse,
   listDataType,
@@ -213,4 +213,67 @@ export function bigModelChatDelete(
       id_list: idList,
     },
   });
+}
+
+export interface roleSampleType {
+  id: number;
+  name: string;
+  abstract: string;
+  icon: string;
+}
+
+export interface squareType {
+  id: number;
+  title: string;
+  roleList: roleSampleType[];
+}
+
+export function squareListApi(): Promise<baseResponse<squareType[]>> {
+  return useAxios.get("/api/bigModel/square");
+}
+
+// 用户角色-历史列表
+export function roleHistoryListApi(): Promise<baseResponse<roleSampleType[]>> {
+  return useAxios.get("/api/bigModel/role_history");
+}
+
+// 角色会话类型
+export interface roleSessionType {
+  id: number;
+  created_at: string;
+  name: string; // 会话名称
+}
+
+// 请求角色会话列表的入参
+export interface roleSessionRequest extends paramsType {
+  roleID: number;
+}
+
+// 角色会话列表
+export const roleSessionListApi: (
+  params: roleSessionRequest
+) => Promise<baseResponse<listDataType<roleSessionType>>> = cacheRequest(
+  (params: roleSessionRequest) =>
+    useAxios.get("/api/bigModel/role_sessions", { params })
+);
+
+export function sessionCreateApi(
+  roleID: number
+): Promise<baseResponse<number>> {
+  return useAxios.post("/api/bigModel/sessions", { roleID });
+}
+
+export interface sessionNameUpdateRequest {
+  sessionID: number;
+  name: string;
+}
+
+export function sessionNameUpdateApi(
+  data: sessionNameUpdateRequest
+): Promise<baseResponse<string>> {
+  return useAxios.put("/api/bigModel/sessions", data);
+}
+
+export function sessionRemoveApi(id: number): Promise<baseResponse<string>> {
+  return useAxios.delete("/api/bigModel/sessions/" + id.toString());
 }

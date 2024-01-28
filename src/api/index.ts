@@ -71,7 +71,9 @@ export function defaultOptionApi(
   return useAxios.get(url, { params });
 }
 
-export function cacheRequest<T>(func: () => Promise<T>): () => Promise<T> {
+export function cacheRequest<T>(
+  func: (...params: any) => Promise<T>
+): () => Promise<T> {
   let lastRequestTime: number = 0; // 存储上次请求的时间戳
   let cacheData: T | null = null; // 上次缓存的数据
   let currentRequest: Promise<T> | null = null;
@@ -84,7 +86,7 @@ export function cacheRequest<T>(func: () => Promise<T>): () => Promise<T> {
     }
     // 没有缓存数据，或者时间超过一秒，那就发起新的请求
     if (!currentRequest) {
-      currentRequest = func().then((res: T) => {
+      currentRequest = func(...arguments).then((res: T) => {
         // 更新之前的数据和时间
         lastRequestTime = currentTime;
         cacheData = res;

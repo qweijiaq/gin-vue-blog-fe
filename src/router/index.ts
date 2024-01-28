@@ -32,6 +32,24 @@ const router = createRouter({
           component: () => import("@/views/web/chat.vue"),
         },
         {
+          path: "bigModel",
+          name: "bigModel",
+          component: () => import("@/views/web/big_model/index.vue"),
+          redirect: "/bigModel/square",
+          children: [
+            {
+              path: "square", // 角色广场
+              name: "role_square",
+              component: () => import("@/views/web/big_model/role_square.vue"),
+            },
+            {
+              path: "session", // 角色列表
+              name: "role_session",
+              component: () => import("@/views/web/big_model/session.vue"),
+            },
+          ],
+        },
+        {
           path: "detail/:id",
           name: "detail",
           component: () => import("@/views/web/article.vue"),
