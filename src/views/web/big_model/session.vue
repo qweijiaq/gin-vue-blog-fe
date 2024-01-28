@@ -51,6 +51,15 @@
           </div>
         </div>
       </div>
+      <div class="menu">
+        <div class="ipt">
+          <IconSend></IconSend>
+          <a-textarea
+            placeholder="来说点什么吧...(Shift + Enter = 换行)"
+            :auto-size="{ minRows: 1, maxRows: 5 }"
+          ></a-textarea>
+        </div>
+      </div>
     </div>
     <div class="right">
       <div class="role_info">
@@ -66,6 +75,9 @@
         }}</a-typography-text>
       </div>
       <div class="session_list">
+        <a-button @click="createSession" class="add_session" type="outline" long
+          >创建新会话</a-button
+        >
         <div
           :class="{
             item: true,
@@ -100,6 +112,7 @@ import {
   sessionRemoveApi,
   roleDetailApi,
   bigModelChatListApi,
+  sessionCreateApi,
 } from "@/api/big_model";
 import type {
   roleSessionType,
@@ -114,6 +127,7 @@ import { useStore } from "@/stores";
 import { dateTimeFormat } from "@/utils/timeFormat";
 import { MdPreview } from "md-editor-v3";
 import "md-editor-v3/lib/preview.css";
+import { IconSend } from "@arco-design/web-vue/es/icon";
 
 const route = useRoute();
 const store = useStore();
@@ -226,6 +240,30 @@ async function getData() {
 getData();
 
 const isManage = ref<boolean>(false);
+
+watch(
+  () => route.query.sessionID,
+  () => {
+    getData();
+  },
+  { immediate: true }
+);
+
+async function createSession() {
+  let res = await sessionCreateApi(Number(route.query.roleID));
+  if (res.code) {
+    Message.error(res.msg);
+    return;
+  }
+  if (res.msg !== "已存在新的会话") Message.success(res.msg);
+  router.push({
+    name: route.name as string,
+    query: {
+      roleID: route.query.roleID,
+      sessionID: res.data,
+    },
+  });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -238,6 +276,7 @@ const isManage = ref<boolean>(false);
     height: calc(100vh - 100px);
     background-color: var(--color-bg-1);
     border-radius: 5px;
+    position: relative;
 
     .head {
       text-align: center;
@@ -321,6 +360,35 @@ const isManage = ref<boolean>(false);
         }
       }
     }
+
+    .menu {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+
+      .ipt {
+        width: 100%;
+        position: relative;
+        margin-left: 10px;
+
+        svg {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: var(--color-text-2);
+          z-index: 1;
+          cursor: pointer;
+        }
+
+        .arco-textarea-wrapper {
+          border-radius: 10px;
+        }
+      }
+    }
   }
 
   .right {
@@ -371,6 +439,12 @@ const isManage = ref<boolean>(false);
 
     .session_list {
       padding: 20px;
+
+      .add_session {
+        border-radius: 10px;
+        margin-bottom: 20px;
+        height: 40px;
+      }
 
       .item {
         border-radius: 10px;
