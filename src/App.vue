@@ -10,6 +10,7 @@ const store = useStore();
 
 store.loadTheme();
 store.loadToken();
+store.getBigModelInfo();
 </script>
 
 <style scoped></style>

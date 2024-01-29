@@ -1,8 +1,8 @@
 <template>
   <div class="role_square_view">
     <div class="banner">
-      <!-- <div class="head">{{ store.bigModelInfo.title }}</div>
-      <div class="slogan">{{ store.bigModelInfo.slogan }}</div> -->
+      <div class="head">{{ store.bigModelInfo.title }}</div>
+      <div class="slogan">{{ store.bigModelInfo.slogan }}</div>
     </div>
     <div class="role_tags">
       <span

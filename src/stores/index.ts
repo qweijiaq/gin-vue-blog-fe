@@ -3,6 +3,10 @@ import { parseToken } from "@/utils/jwt";
 import { Message } from "@arco-design/web-vue";
 import { defineStore } from "pinia";
 import { siteInfoApi, type siteInfoType } from "@/api/settings";
+import {
+  bigModelSettingsApi,
+  type bigModelSettingsType,
+} from "@/api/big_model";
 
 const theme: boolean = true; // true - light   false - dark
 const isCollapsed: boolean = false;
@@ -46,6 +50,20 @@ const siteInfo: siteInfoType = {
   wechat_image: "",
 };
 
+const bigModelInfo: bigModelSettingsType = {
+  name: "",
+  enable: false,
+  order: 0,
+  access_key_id: "",
+  access_key_secret: "",
+  agent_key: "",
+  app_id: "",
+  title: "",
+  prompt: "",
+  slogan: "",
+  help: "",
+};
+
 export const useStore = defineStore("store", {
   state() {
     return {
@@ -53,6 +71,7 @@ export const useStore = defineStore("store", {
       isCollapsed, // 后台侧边栏的搜索状态，默认展开
       userInfo, // 用户信息
       siteInfo,
+      bigModelInfo,
     };
   },
   actions: {
@@ -152,6 +171,11 @@ export const useStore = defineStore("store", {
       this.siteInfo = res.data;
 
       sessionStorage.setItem("siteInfo", JSON.stringify(this.siteInfo));
+    },
+
+    async getBigModelInfo() {
+      const res = await bigModelSettingsApi();
+      Object.assign(this.bigModelInfo, res.data);
     },
   },
   getters: {

@@ -15,6 +15,16 @@
               :title="item.title"
               >{{ item.title }}</a
             >
+            <a
+              :href="item.path"
+              :title="item.title"
+              v-else-if="item.title === '大模型'"
+              :class="{
+                'router-link-active router-link-exact-active':
+                  (route.path as string).startsWith('/bigModel'),
+              }"
+              >{{ item.title }}</a
+            >
             <router-link :to="item.path" v-else>{{ item.title }}</router-link>
           </template>
         </div>
@@ -41,9 +51,15 @@ import { useStore } from "@/stores";
 import GvbUserInfoMenu from "@/components/common/user_info_menu.vue";
 import { menuNameListApi } from "@/api/menu";
 import type { menuNameType } from "@/api/menu";
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { onUnmounted } from "vue";
 import GvbSearch from "@/components/web/search.vue";
+import { bigModelSettingsApi } from "@/api/big_model";
+import type { bigModelSettingsType } from "@/api/big_model";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+console.log(route);
 
 interface Props {
   noScroll?: boolean; // 不需要滚动监听
@@ -79,6 +95,20 @@ onUnmounted(() => {
   }
 });
 
+const bigModelData = reactive<bigModelSettingsType>({
+  name: "",
+  enable: false,
+  order: 0,
+  access_key_id: "",
+  access_key_secret: "",
+  agent_key: "",
+  app_id: "",
+  title: "",
+  prompt: "",
+  slogan: "",
+  help: "",
+});
+
 async function getData() {
   const val = sessionStorage.getItem("navList");
   if (val !== null) {
@@ -89,6 +119,17 @@ async function getData() {
   }
   let res = await menuNameListApi();
   navList.value = res.data;
+  // 请求大模型参数
+  let bigModelRes = await bigModelSettingsApi();
+  Object.assign(bigModelData, bigModelRes.data);
+  if (bigModelData.enable) {
+    // 大模型启用
+    navList.value.splice(bigModelData.order, 0, {
+      id: 12345,
+      title: "大模型",
+      path: "/bigModel/square",
+    });
+  }
   sessionStorage.setItem("navList", JSON.stringify(navList.value));
 }
 
