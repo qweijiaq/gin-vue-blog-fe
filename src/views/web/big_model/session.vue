@@ -137,7 +137,7 @@ import {
   roleDetailApi,
   bigModelChatListApi,
   sessionCreateApi,
-  bigModelChatDeleteApi,
+  bigModelChatUserDeleteApi,
 } from "@/api/big_model";
 import type {
   roleSessionType,
@@ -331,14 +331,18 @@ function chatSend() {
     chatItem.status = true;
   };
   eventSource.onmessage = function (ev: MessageEvent) {
-    const data: baseResponse<string> = JSON.parse(ev.data);
+    const data: baseResponse<string | number> = JSON.parse(ev.data);
     if (data.code) {
       // Message.error(data.msg)
       chatItem.botContent = data.msg;
       return;
     }
 
-    chatItem.botContent = data.data;
+    if (data.msg === "ok") {
+      chatItem.id = data.data as number;
+      return;
+    }
+    chatItem.botContent = data.data as string;
   };
 
   eventSource.onerror = function (ev: Event) {
@@ -377,12 +381,14 @@ function allIn(value: boolean | (string | number | boolean)[], ev: Event) {
 }
 
 async function chatRemove() {
-  let res = await bigModelChatDeleteApi(useIDList.value);
-  if (res.code) {
-    Message.error(res.msg);
-    return;
+  let resList = await bigModelChatUserDeleteApi(useIDList.value);
+  for (const res of resList) {
+    if (res.code) {
+      Message.error(res.msg);
+      continue;
+    }
+    Message.success(res.msg);
   }
-  Message.success(res.msg);
   useIDList.value = [];
   getData();
 }
