@@ -3,10 +3,8 @@ import { parseToken } from "@/utils/jwt";
 import { Message } from "@arco-design/web-vue";
 import { defineStore } from "pinia";
 import { siteInfoApi, type siteInfoType } from "@/api/settings";
-import {
-  bigModelSettingsApi,
-  type bigModelSettingsType,
-} from "@/api/big_model";
+import type { roleSampleType, bigModelSettingsType } from "@/api/big_model";
+import { bigModelSettingsApi, roleHistoryListApi } from "@/api/big_model";
 
 const theme: boolean = true; // true - light   false - dark
 const isCollapsed: boolean = false;
@@ -64,6 +62,8 @@ const bigModelInfo: bigModelSettingsType = {
   help: "",
 };
 
+const userRoleHistoryList: roleSampleType[] = [];
+
 export const useStore = defineStore("store", {
   state() {
     return {
@@ -72,6 +72,7 @@ export const useStore = defineStore("store", {
       userInfo, // 用户信息
       siteInfo,
       bigModelInfo,
+      userRoleHistoryList,
     };
   },
   actions: {
@@ -176,6 +177,12 @@ export const useStore = defineStore("store", {
     async getBigModelInfo() {
       const res = await bigModelSettingsApi();
       Object.assign(this.bigModelInfo, res.data);
+    },
+
+    async getUserRoleHistoryList() {
+      if (!this.isLogin) return;
+      let res = await roleHistoryListApi();
+      this.userRoleHistoryList = res.data;
     },
   },
   getters: {

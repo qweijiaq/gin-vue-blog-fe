@@ -29,6 +29,7 @@ export async function checkRole(record: roleSampleType) {
       return;
     }
     sessionID = res1.data;
+    store.getUserRoleHistoryList();
   }
 
   router.push({

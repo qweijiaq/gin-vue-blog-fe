@@ -210,7 +210,22 @@ async function remove(record: roleSessionType) {
     return;
   }
   Message.success(res.msg);
-  getSessionList();
+  await getSessionList();
+  // 跳转会话
+  if (data.list.length > 0) {
+    router.push({
+      name: route.name as string,
+      query: {
+        roleID: route.query.roleID,
+        sessionID: data.list[0].id,
+      },
+    });
+    return;
+  }
+  store.getUserRoleHistoryList();
+  router.push({
+    name: "role_square",
+  });
 }
 
 function checkSession(record: roleSessionType) {
@@ -416,6 +431,10 @@ function isInList(id: number): boolean {
       padding: 20px;
       height: calc(100vh - 240px);
       overflow-y: auto;
+
+      .arco-checkbox-group {
+        width: 100%;
+      }
       .item {
         .bot_item {
           display: flex;

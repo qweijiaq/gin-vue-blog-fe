@@ -253,10 +253,9 @@ export interface roleSessionRequest extends paramsType {
 // 角色会话列表
 export const roleSessionListApi: (
   params: roleSessionRequest
-) => Promise<baseResponse<listDataType<roleSessionType>>> = cacheRequest(
-  (params: roleSessionRequest) =>
-    useAxios.get("/api/bigModel/role_sessions", { params })
-);
+) => Promise<baseResponse<listDataType<roleSessionType>>> = (
+  params: roleSessionRequest
+) => useAxios.get("/api/bigModel/role_sessions", { params });
 
 export function sessionCreateApi(
   roleID: number

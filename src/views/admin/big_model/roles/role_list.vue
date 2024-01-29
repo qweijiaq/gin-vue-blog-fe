@@ -37,7 +37,7 @@
                       height="30"
                       width="30"
                       style="border-radius: 5px; margin-right: 10px"
-                      :src="item.value"
+                      :src="(item.value as string)"
                       alt=""
                     />
                     {{ item.label }}
@@ -186,6 +186,7 @@ import {
   bigModelRoleIconOptionsApi,
 } from "@/api/big_model";
 import BigModelRolePreview from "@/components/admin/big_model_role_preview.vue";
+import type { optionType } from "@/types";
 
 const columns = [
   { title: "角色名称", dataIndex: "name" },
@@ -241,7 +242,7 @@ async function getTagOptions() {
 }
 getTagOptions();
 
-const iconOptions = ref<optionsResponse<string>[]>([]);
+const iconOptions = ref<optionType[]>([]);
 async function getIconOptions() {
   let res = await bigModelRoleIconOptionsApi();
   iconOptions.value = res.data;

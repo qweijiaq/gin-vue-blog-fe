@@ -62,7 +62,7 @@
           <span>{{ form.sign_status }}</span>
         </a-form-item>
         <a-form-item label="用户积分">
-          <span>{{ form.integral }}</span>
+          <span>{{ form.scope }}</span>
         </a-form-item>
       </a-form>
       <gvb-title title="操作"></gvb-title>
@@ -167,6 +167,7 @@ const form = reactive<userInfoType>({
   role_id: 0,
   sign_status: "邮箱",
   integral: 0,
+  scope: 0,
   sign: "",
   link: "",
 });

@@ -13,7 +13,7 @@
               active: Number(route.query.roleID) === item.id,
             }"
             @click="checkRole(item)"
-            v-for="item in list"
+            v-for="item in store.userRoleHistoryList"
           >
             <img class="avatar" :src="item.icon" alt="" />
             <div class="content">
@@ -41,32 +41,19 @@
 <script lang="ts" setup>
 import GvbNav from "@/components/web/nav.vue";
 import { useRoute } from "vue-router";
-import { roleHistoryListApi } from "@/api/big_model";
-import { ref, watch } from "vue";
-import type { roleSampleType } from "@/api/big_model";
+import { watch } from "vue";
 import { useStore } from "@/stores";
 import { checkRole } from "@/service/checkRole";
 
 const route = useRoute();
 const store = useStore();
 
-const roleID = ref(Number(route.query.roleID));
-
-const list = ref<roleSampleType[]>([]);
-async function getData() {
-  if (!store.isLogin) {
-    return;
-  }
-  let res = await roleHistoryListApi();
-  list.value = res.data;
-}
-getData();
-
 watch(
   () => store.isLogin,
   () => {
-    getData();
-  }
+    store.getUserRoleHistoryList();
+  },
+  { immediate: true }
 );
 </script>
 
