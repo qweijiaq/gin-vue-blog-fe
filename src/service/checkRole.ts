@@ -2,9 +2,16 @@ import type { roleSampleType } from "@/api/big_model";
 import { Message } from "@arco-design/web-vue";
 import router from "@/router";
 import { roleSessionListApi, sessionCreateApi } from "@/api/big_model";
+import { useStore } from "@/stores";
+
+const store = useStore();
 
 // 选择角色，跳到role_session页面，调用角色会话列表，如果有就取列表的第一个元素的会话id，没有调创建会话的接口
 export async function checkRole(record: roleSampleType) {
+  if (!store.isLogin) {
+    Message.warning("请登录");
+    return;
+  }
   let res = await roleSessionListApi({ roleID: record.id });
   if (res.code) {
     Message.error(res.msg);

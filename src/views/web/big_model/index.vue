@@ -42,7 +42,7 @@
 import GvbNav from "@/components/web/nav.vue";
 import { useRoute } from "vue-router";
 import { roleHistoryListApi } from "@/api/big_model";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import type { roleSampleType } from "@/api/big_model";
 import { useStore } from "@/stores";
 import { checkRole } from "@/service/checkRole";
@@ -61,6 +61,13 @@ async function getData() {
   list.value = res.data;
 }
 getData();
+
+watch(
+  () => store.isLogin,
+  () => {
+    getData();
+  }
+);
 </script>
 
 <style lang="scss" scoped>

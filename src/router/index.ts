@@ -46,6 +46,9 @@ const router = createRouter({
               path: "session", // 角色列表
               name: "role_session",
               component: () => import("@/views/web/big_model/session.vue"),
+              meta: {
+                isLogin: true,
+              },
             },
           ],
         },
