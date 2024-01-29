@@ -77,6 +77,13 @@ const form = reactive<bigModelRoleTagType>({
   roleCount: 0,
 });
 
+const emptyForm: bigModelRoleTagType = {
+  id: 0,
+  title: "",
+  color: "",
+  roleCount: 0,
+};
+
 const gvbTable = ref();
 const visible = ref(false);
 
@@ -87,6 +94,10 @@ function edit(record: bigModelRoleTagType) {
 }
 
 function add() {
+  form.id = emptyForm.id;
+  form.title = emptyForm.title;
+  form.color = emptyForm.color;
+  form.roleCount = emptyForm.roleCount;
   visible.value = true;
 }
 

@@ -59,7 +59,6 @@ import type { bigModelSettingsType } from "@/api/big_model";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-console.log(route);
 
 interface Props {
   noScroll?: boolean; // 不需要滚动监听

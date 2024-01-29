@@ -206,7 +206,7 @@ export function bigModelChatListApi(
   return useAxios.get("/api/bigModel/chats", { params });
 }
 
-export function bigModelChatDelete(
+export function bigModelChatDeleteApi(
   idList: number[]
 ): Promise<baseResponse<string>> {
   return useAxios.delete("/api/bigModel/chats", {
@@ -289,8 +289,36 @@ export interface roleDetailType {
   chatCount: number;
 }
 
-export function roleDetailApi(
-  id: number
-): Promise<baseResponse<roleDetailType>> {
-  return useAxios.get("/api/bigModel/roles/" + id.toString());
+export const roleDetailApi: (
+  id: number,
+  sessionId: number
+) => Promise<baseResponse<roleDetailType>> = cacheRequest(
+  (id: number, sessionId: number) => {
+    return useAxios.get(`/api/bigModel/roles/${id}?sessionId=${sessionId}`);
+  }
+);
+
+export interface chatSSEParams {
+  token: string;
+  sessionID: number;
+  content: string;
+}
+
+export interface userScopeEnableType {
+  enable: boolean;
+  scope: number;
+}
+
+// 查询用户是否可以领取积分
+export function bigModelUserScopeEnableApi(): Promise<
+  baseResponse<userScopeEnableType>
+> {
+  return useAxios.get("/api/bigModel/user_scope_enable");
+}
+
+// 用户领取积分
+export function bigModelUserScopeApi(
+  status: boolean
+): Promise<baseResponse<string>> {
+  return useAxios.post("/api/bigModel/user_scope", { status });
 }

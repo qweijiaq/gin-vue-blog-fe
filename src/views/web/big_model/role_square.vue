@@ -30,9 +30,15 @@
 import "@/assets/font.css";
 import { useStore } from "@/stores";
 import { squareListApi } from "@/api/big_model";
-import { ref } from "vue";
+import { ref, h } from "vue";
 import type { squareType, roleSampleType } from "@/api/big_model";
+import {
+  bigModelUserScopeEnableApi,
+  bigModelUserScopeApi,
+} from "@/api/big_model";
 import { checkRole } from "@/service/checkRole";
+import type { VNode } from "vue";
+import { Button, Message, Notification } from "@arco-design/web-vue";
 
 const store = useStore();
 
@@ -53,6 +59,62 @@ function checkTag(record: squareType) {
   useRoleList.value = record.roleList;
   activeTag.value = record.id;
 }
+
+// 查询用户是否可以领取积分
+async function getUserScopeEnable() {
+  if (!store.isLogin) {
+    return;
+  }
+  let res = await bigModelUserScopeEnableApi();
+  if (res.code) {
+    // 没有登录
+    return;
+  }
+  if (res.data.enable) {
+    const id = `${Date.now()}`;
+    const closeNotification = Notification.info({
+      id,
+      title: "积分领取通知",
+      content: `今日可免费领取 ${res.data.scope} 积分`,
+      duration: 0,
+      footer: (): VNode[] => {
+        return [
+          h(
+            Button,
+            {
+              style: { marginRight: "10px" },
+              onClick: () => bigModelScope(false),
+            },
+            "取消"
+          ),
+          h(
+            Button,
+            { type: "primary", onClick: () => bigModelScope(true) },
+            "领取"
+          ),
+        ];
+      },
+      closable: true,
+    });
+  }
+}
+
+// 领取
+async function bigModelScope(status: boolean) {
+  let res = await bigModelUserScopeApi(status);
+  if (res.code) {
+    Message.error(res.msg);
+    return;
+  }
+  if (res.msg === "") {
+    Notification.clear();
+    return;
+  }
+  Message.success(res.msg);
+  Notification.clear();
+}
+
+getUserScopeEnable();
 </script>
 
 <style lang="scss" scoped>

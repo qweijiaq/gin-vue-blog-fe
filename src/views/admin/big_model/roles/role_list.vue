@@ -153,17 +153,17 @@
         </div>
       </template>
       <template #abstract="{ record }: { record: bigModelRoleType }">
-        <a-typography-text :ellipsis="{ rows: 1 }">{{
+        <a-typography-text :ellipsis="{ expandable: true }">{{
           record.abstract
         }}</a-typography-text>
       </template>
       <template #prologue="{ record }: { record: bigModelRoleType }">
-        <a-typography-text :ellipsis="{ rows: 1 }">{{
+        <a-typography-text :ellipsis="{ expandable: true }">{{
           record.prologue
         }}</a-typography-text>
       </template>
       <template #prompt="{ record }: { record: bigModelRoleType }">
-        <a-typography-text :ellipsis="{ rows: 1 }">{{
+        <a-typography-text :ellipsis="{ expandable: true }">{{
           record.prompt
         }}</a-typography-text>
       </template>

@@ -82,7 +82,7 @@ import type {
 import {
   bigModelSessionListApi,
   bigModelChatListApi,
-  bigModelChatDelete,
+  bigModelChatDeleteApi,
 } from "@/api/big_model";
 import { dateTimeFormat } from "@/utils/timeFormat";
 import { MdPreview } from "md-editor-v3";
@@ -155,7 +155,7 @@ function allIn(value: boolean | (string | number | boolean)[], ev: Event) {
 }
 
 async function chatRemove() {
-  let res = await bigModelChatDelete(useIDList.value);
+  let res = await bigModelChatDeleteApi(useIDList.value);
   if (res.code) {
     Message.error(res.msg);
     return;

@@ -81,7 +81,7 @@ export function cacheRequest<T>(
     const currentTime = Date.now();
     const timeDiff = currentTime - lastRequestTime;
 
-    if (timeDiff < 1000 && cacheData) {
+    if (timeDiff < 500 && cacheData) {
       return Promise.resolve(cacheData);
     }
     // 没有缓存数据，或者时间超过一秒，那就发起新的请求

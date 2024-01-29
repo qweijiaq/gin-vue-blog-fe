@@ -22,39 +22,63 @@
       </a-form>
     </a-modal>
     <div class="left">
-      <div class="head">角色名称</div>
+      <div class="head">
+        {{ detail.name }}
+        <div class="manage">
+          <a-button
+            v-if="isManage && useIDList.length > 0"
+            text="primary"
+            status="danger"
+            size="mini"
+            style="margin-right: 5px"
+            @click="chatRemove"
+            >删除</a-button
+          >
+          <a-checkbox v-if="isManage" style="margin-right: 5px" @change="allIn"
+            >全选</a-checkbox
+          >
+          <a-checkbox v-model="isManage">管理模式</a-checkbox>
+        </div>
+      </div>
       <div class="chat_list">
-        <div :class="{ item: true }" v-for="item in chatData.list">
-          <div class="user_item">
-            <a-checkbox v-if="isManage" :value="item.id"></a-checkbox>
-            <div class="avatar">
-              <img :src="item.userAvatar" alt="" />
+        <a-checkbox-group v-model="useIDList">
+          <div
+            :class="{ item: true, isCheck: isInList(item.id) }"
+            v-for="item in chatData.list"
+          >
+            <div class="user_item">
+              <a-checkbox v-if="isManage" :value="item.id"></a-checkbox>
+              <div class="avatar">
+                <img :src="item.userAvatar" alt="" />
+              </div>
+              <div class="container">
+                <div class="date">{{ dateTimeFormat(item.created_at) }}</div>
+                <div class="content">{{ item.userContent }}</div>
+              </div>
             </div>
-            <div class="container">
-              <div class="date">{{ dateTimeFormat(item.created_at) }}</div>
-              <div class="content">{{ item.userContent }}</div>
-            </div>
-          </div>
-          <div class="bot_item">
-            <div class="avatar">
-              <img :src="item.botAvatar" alt="" />
-            </div>
-            <div class="container">
-              <div class="date">{{ dateTimeFormat(item.created_at) }}</div>
-              <div class="content">
-                <MdPreview
-                  :model-value="item.botContent"
-                  :theme="store.themeString"
-                ></MdPreview>
+            <div class="bot_item">
+              <div class="avatar">
+                <img :src="item.botAvatar" alt="" />
+              </div>
+              <div class="container">
+                <div class="date">{{ dateTimeFormat(item.created_at) }}</div>
+                <div class="content">
+                  <MdPreview
+                    :model-value="item.botContent"
+                    :theme="store.themeString"
+                  ></MdPreview>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </a-checkbox-group>
       </div>
       <div class="menu">
         <div class="ipt">
-          <IconSend></IconSend>
+          <IconSend @click="chatSend"></IconSend>
           <a-textarea
+            v-model="chatParams.content"
+            @keydown.enter.prevent="userChat"
             placeholder="来说点什么吧...(Shift + Enter = 换行)"
             :auto-size="{ minRows: 1, maxRows: 5 }"
           ></a-textarea>
@@ -113,12 +137,14 @@ import {
   roleDetailApi,
   bigModelChatListApi,
   sessionCreateApi,
+  bigModelChatDeleteApi,
 } from "@/api/big_model";
 import type {
   roleSessionType,
   sessionNameUpdateRequest,
   roleDetailType,
   bigModelChatListType,
+  chatSSEParams,
 } from "@/api/big_model";
 import type { listDataType } from "@/api";
 import { Message } from "@arco-design/web-vue";
@@ -128,6 +154,7 @@ import { dateTimeFormat } from "@/utils/timeFormat";
 import { MdPreview } from "md-editor-v3";
 import "md-editor-v3/lib/preview.css";
 import { IconSend } from "@arco-design/web-vue/es/icon";
+import type { baseResponse } from "@/api";
 
 const route = useRoute();
 const store = useStore();
@@ -145,7 +172,6 @@ async function getSessionList() {
   data.list = res.data.list;
   data.count = res.data.count;
 }
-getSessionList();
 
 const form = reactive<sessionNameUpdateRequest>({
   sessionID: 0,
@@ -197,15 +223,6 @@ function checkSession(record: roleSessionType) {
   });
 }
 
-watch(
-  () => route.query.roleID,
-  () => {
-    getSessionList();
-    getRoleDetail();
-  },
-  { immediate: true }
-);
-
 const detail = reactive<roleDetailType>({
   id: 0,
   created_at: "",
@@ -216,10 +233,12 @@ const detail = reactive<roleDetailType>({
   chatCount: 0,
 });
 async function getRoleDetail() {
-  let res = await roleDetailApi(Number(route.query.roleID));
+  let res = await roleDetailApi(
+    Number(route.query.roleID),
+    Number(route.query.sessionID)
+  );
   Object.assign(detail, res.data);
 }
-getRoleDetail();
 
 const chatData = reactive<listDataType<bigModelChatListType>>({
   count: 0,
@@ -237,17 +256,8 @@ async function getData() {
     allIDList.value.push(item.id);
   }
 }
-getData();
 
 const isManage = ref<boolean>(false);
-
-watch(
-  () => route.query.sessionID,
-  () => {
-    getData();
-  },
-  { immediate: true }
-);
 
 async function createSession() {
   let res = await sessionCreateApi(Number(route.query.roleID));
@@ -263,6 +273,112 @@ async function createSession() {
       sessionID: res.data,
     },
   });
+}
+
+const chatParams = reactive<chatSSEParams>({
+  token: store.userInfo.token,
+  sessionID: 0,
+  content: "",
+});
+function userChat(e: KeyboardEvent) {
+  if (e.shiftKey || e.ctrlKey) {
+    chatParams.content += "\n";
+    return;
+  }
+  if (e.isComposing) {
+    // 防止输入时回车的提交事件
+    return;
+  }
+  chatSend();
+}
+
+function chatSend() {
+  if (chatParams.content.trim() === "") {
+    Message.warning("内容不能为空");
+    return;
+  }
+  const chatItem = reactive<bigModelChatListType>({
+    id: 0,
+    created_at: new Date().toLocaleString(),
+    status: false,
+    userContent: chatParams.content,
+    userAvatar: store.userInfo.avatar,
+    botAvatar: detail.icon,
+    botContent: "",
+  });
+  chatData.list.push(chatItem);
+  chatParams.sessionID = Number(route.query.sessionID);
+  const eventSource = new EventSource(
+    `/api/bigModel/chat_sse?token=${chatParams.token}&sessionID=${chatParams.sessionID}&content=${chatParams.content}`
+  );
+  eventSource.onopen = function () {
+    chatParams.content = "";
+    chatItem.status = true;
+  };
+  eventSource.onmessage = function (ev: MessageEvent) {
+    const data: baseResponse<string> = JSON.parse(ev.data);
+    if (data.code) {
+      // Message.error(data.msg)
+      chatItem.botContent = data.msg;
+      return;
+    }
+
+    chatItem.botContent = data.data;
+  };
+
+  eventSource.onerror = function (ev: Event) {
+    eventSource.close();
+    // 控制页面滚动到最底部
+  };
+}
+
+watch(
+  () => [route.query.sessionID, route.query.roleID],
+  () => {
+    getData();
+    getRoleDetail();
+    getSessionList();
+  },
+  { immediate: true }
+);
+
+watch(
+  () => chatData.list.length,
+  () => {
+    detail.chatCount = chatData.list.length;
+  }
+);
+
+const useIDList = ref<number[]>([]);
+function allIn(value: boolean | (string | number | boolean)[], ev: Event) {
+  let v = value as boolean;
+  if (v) {
+    // 全选
+    useIDList.value = allIDList.value;
+  } else {
+    // 取消全选
+    useIDList.value = [];
+  }
+}
+
+async function chatRemove() {
+  let res = await bigModelChatDeleteApi(useIDList.value);
+  if (res.code) {
+    Message.error(res.msg);
+    return;
+  }
+  Message.success(res.msg);
+  useIDList.value = [];
+  getData();
+}
+
+function isInList(id: number): boolean {
+  for (const uid of useIDList.value) {
+    if (uid == id) {
+      return true;
+    }
+  }
+  return false;
 }
 </script>
 
@@ -284,6 +400,16 @@ async function createSession() {
       border-bottom: 1px solid var(--bg);
       color: var(--color-text-2);
       font-size: 16px;
+      position: relative;
+
+      .manage {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 15px;
+        display: flex;
+        align-items: center;
+      }
     }
 
     .chat_list {
