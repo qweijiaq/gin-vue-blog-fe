@@ -217,14 +217,12 @@ export function bigModelChatDeleteApi(
 }
 
 // 用户删除自己的对话
-export function bigModelChatUserDeleteApi(
-  idList: number[]
-): Array<Promise<baseResponse<string>>> {
+export function bigModelChatUserDeleteApi(idList: number[]): any {
   return Promise.all(
     idList.map((item: number) =>
       useAxios.delete("/api/bigModel/chats/" + item.toString())
     )
-  ) as any;
+  );
 }
 
 export interface roleSampleType {

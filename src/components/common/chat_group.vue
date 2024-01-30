@@ -229,7 +229,7 @@ onUnmounted(() => {
 
 function websocketConnect() {
   // 建立websocket连接
-  socket.value = new WebSocket(`ws://${location.host}/ws/api/chat_groups`);
+  socket.value = new WebSocket(`wss://${location.host}/ws/api/chat_groups`);
   // 接收消息
   socket.value.onmessage = function (event) {
     let _data = event.data;

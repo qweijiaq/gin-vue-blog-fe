@@ -381,7 +381,7 @@ function allIn(value: boolean | (string | number | boolean)[], ev: Event) {
 }
 
 async function chatRemove() {
-  let resList = await bigModelChatUserDeleteApi(useIDList.value);
+  const resList = await bigModelChatUserDeleteApi(useIDList.value);
   for (const res of resList) {
     if (res.code) {
       Message.error(res.msg);
